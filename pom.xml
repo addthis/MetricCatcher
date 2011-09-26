@@ -1,0 +1,104 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.clearspring.common.build.maven.pom</groupId>
+        <artifactId>jar-pom</artifactId>
+        <version>1.0.7</version>
+    </parent>
+
+    <groupId>com.clearspring.thetan</groupId>
+    <artifactId>metricCatcher</artifactId>
+    <name>metricCatcher</name>
+    <version>0.0.1-SNAPSHOT</version>
+    <description>Receives metrics on UDP, sends them to Ganglia</description>
+
+    <properties>
+        <spring.version>2.5.5</spring.version>
+        <slf4j.version>1.6.1</slf4j.version>
+        <scala.version>2.8.1</scala.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.yammer.metrics</groupId>
+            <artifactId>metrics-core</artifactId>
+            <version>2.0.0-BETA17-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.yammer.metrics</groupId>
+            <artifactId>metrics-graphite</artifactId>
+            <version>2.0.0-BETA17-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.yammer.metrics</groupId>
+            <artifactId>metrics-ganglia</artifactId>
+            <version>2.0.0-BETA17-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
+
+    <developers>
+        <developer>
+            <name>Drew Stephens</name>
+            <email>drew@clearspring.com</email>
+            <url>http://www.clearspring.com</url>
+            <organization>Clearspring Technologies</organization>
+            <organizationUrl>http://www.clearspring.com</organizationUrl>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:svn:http://svn/thetan/metricCatcher</connection>
+        <developerConnection>scm:svn:http://svn/thetan/metricCatcher/trunk</developerConnection>
+        <url>http://svn/thetan/metricCatcher/trunk</url>
+    </scm>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                </configuration>
+            </plugin>
+            <!--
+                set up maven assembly plugin to build combined output jar that gets
+                bundled into dist zip from:
+                http://stackoverflow.com/questions/1522778/maven-assembly-plugin-how-to-create-nested-assemblies
+            -->
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>2.2-beta-5</version>
+                <executions>
+                    <execution>
+                        <id>jar-with-dependencies</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <configuration>
+                            <descriptorRefs>
+                                <descriptorRef>jar-with-dependencies</descriptorRef>
+                            </descriptorRefs>
+                            <archive>
+                                <manifest>
+                                    <mainClass>com.clearspring.thetan.metricCatcher.Loader</mainClass>
+                                </manifest>
+                            </archive>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>dist</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <configuration>
+                            <descriptors>
+                                <descriptor>src/main/assembly/dist.xml</descriptor>
+                            </descriptors>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
