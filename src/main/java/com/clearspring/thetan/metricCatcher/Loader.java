@@ -7,9 +7,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+import org.codehaus.jackson.map.util.LRUMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.yammer.metrics.core.Metric;
 import com.yammer.metrics.reporting.GangliaReporter;
 
 public class Loader {	
@@ -37,9 +39,10 @@ public class Loader {
 		int gangliaPort = Integer.parseInt(properties.getProperty("metricCatcher.ganglia.port"));
 		GangliaReporter reporter = new GangliaReporter(gangliaHost, gangliaPort);
 		
+		int maxMetrics = Integer.parseInt(properties.getProperty("metricCatcher.maxMetrics"));
+		Map<String, Metric> lruMap = new LRUMap<String, Metric>(10, maxMetrics);
+		
 		int port = Integer.parseInt(properties.getProperty("metricCatcher.udp.port"));
-		// TODO make this an LRUMap
-		Map lruMap = new HashMap();
 		
 		metricCatcher = new MetricCatcher(port, reporter, lruMap);
 		metricCatcher.start();
