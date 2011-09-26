@@ -3,6 +3,8 @@ package com.clearspring.thetan.metricCatcher;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 import org.slf4j.Logger;
@@ -29,8 +31,12 @@ public class Loader {
 			System.exit(1);
 		}
 		
-		metricCatcher = new MetricCatcher();
+		int port = Integer.parseInt(properties.getProperty("metricCatcher.udp.port"));
+		Map lruMap = new HashMap();
+		metricCatcher = new MetricCatcher(port, lruMap);
 		metricCatcher.start();
+		
+		// TODO setup GangliaReporter
 
 		// Register a shutdown hook and wait for termination
 		Runtime.getRuntime().addShutdownHook(new Thread() {
