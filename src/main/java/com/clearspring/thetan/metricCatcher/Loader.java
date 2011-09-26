@@ -10,6 +10,8 @@ import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.yammer.metrics.reporting.GangliaReporter;
+
 public class Loader {	
 	private static final Logger logger = LoggerFactory.getLogger(Loader.class); 
 	private static final String defaultPropertiesFilename = "conf/config.properties";
@@ -31,12 +33,16 @@ public class Loader {
 			System.exit(1);
 		}
 		
-		int port = Integer.parseInt(properties.getProperty("metricCatcher.udp.port"));
-		Map lruMap = new HashMap();
-		metricCatcher = new MetricCatcher(port, lruMap);
-		metricCatcher.start();
+		String gangliaHost = properties.getProperty("metricCatcher.ganglia.host");
+		int gangliaPort = Integer.parseInt(properties.getProperty("metricCatcher.ganglia.port"));
+		GangliaReporter reporter = new GangliaReporter(gangliaHost, gangliaPort);
 		
-		// TODO setup GangliaReporter
+		int port = Integer.parseInt(properties.getProperty("metricCatcher.udp.port"));
+		// TODO make this an LRUMap
+		Map lruMap = new HashMap();
+		
+		metricCatcher = new MetricCatcher(port, reporter, lruMap);
+		metricCatcher.start();
 
 		// Register a shutdown hook and wait for termination
 		Runtime.getRuntime().addShutdownHook(new Thread() {

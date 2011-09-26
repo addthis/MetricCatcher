@@ -5,21 +5,31 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.yammer.metrics.reporting.AbstractReporter;
+import com.yammer.metrics.reporting.GangliaReporter;
+
 public class MetricCatcher extends Thread {
 	private static final Logger logger = LoggerFactory.getLogger(MetricCatcher.class);
     AtomicBoolean shutdown = new AtomicBoolean();
     
+    private AbstractReporter reporter;
+    
     private DatagramSocket socket;
     private Map metricCache;
 	
-    public MetricCatcher(int port, Map metricCache) throws IOException {
-        socket = new DatagramSocket(port);
-        metricCache = metricCache;
+    public MetricCatcher(int listenPort, AbstractReporter reporter, Map metricCache) throws IOException {
+        socket = new DatagramSocket(listenPort);
+        this.metricCache = metricCache;
+        
+        // For sending metrics on to the metric collector
+        this.reporter = reporter;
+        reporter.start(60, TimeUnit.SECONDS);
     }
     
 	@Override
