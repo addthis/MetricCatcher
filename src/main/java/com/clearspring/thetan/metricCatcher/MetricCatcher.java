@@ -4,36 +4,51 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.apache.commons.lang3.StringUtils;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.yammer.metrics.Metrics;
+import com.yammer.metrics.core.CounterMetric;
+import com.yammer.metrics.core.GaugeMetric;
+import com.yammer.metrics.core.HistogramMetric;
+import com.yammer.metrics.core.MeterMetric;
+import com.yammer.metrics.core.Metric;
+import com.yammer.metrics.core.MetricName;
+import com.yammer.metrics.core.TimerMetric;
 import com.yammer.metrics.reporting.AbstractReporter;
-import com.yammer.metrics.reporting.GangliaReporter;
 
 public class MetricCatcher extends Thread {
 	private static final Logger logger = LoggerFactory.getLogger(MetricCatcher.class);
     AtomicBoolean shutdown = new AtomicBoolean();
     
-    private AbstractReporter reporter;
-    
+    private ObjectMapper mapper = new ObjectMapper();
     private DatagramSocket socket;
-    private Map metricCache;
+    private AbstractReporter reporter;
+    private Map<String, Metric> metricCache;
 	
-    public MetricCatcher(int listenPort, AbstractReporter reporter, Map metricCache) throws IOException {
+    public MetricCatcher(int listenPort, AbstractReporter reporter, Map<String, Metric> metricCache) throws IOException {
         socket = new DatagramSocket(listenPort);
         this.metricCache = metricCache;
         
         // For sending metrics on to the metric collector
         this.reporter = reporter;
-        reporter.start(60, TimeUnit.SECONDS);
+        this.reporter.start(60, TimeUnit.SECONDS);
     }
     
 	@Override
 	public void run() {
+	    // XXX
+	    // TODO length of this byte array
+	    // XXX
 	    byte[] data = new byte[1024];
 	    
 		while (shutdown.get() == false) {
@@ -47,17 +62,100 @@ public class MetricCatcher extends Thread {
 	                logger.debug("Got packet from " + senderAddress + ":" + senderPort);
                 }
                 
-                String json = new String(received.getData());
-                logger.trace("JSON: " + json);
+                byte[] json = received.getData();
+                if (logger.isTraceEnabled()) {
+                    String jsonString = new String(json);
+	                logger.trace("JSON: " + jsonString);
+                }
                 
-                // TODO record the metric
+                List<JSONMetric> jsonMetrics = mapper.readValue(json, List.class);
+                // TODO Ditch already-seen packets based upon first element in JSON list
+                for (JSONMetric jsonMetric : jsonMetrics) {
+                    if (!metricCache.containsKey(jsonMetric.getName())) {
+                        Metric newMetric = createMetric(jsonMetric);
+                        metricCache.put(jsonMetric.getName(), newMetric);
+                    }
+                    
+                    // Record the update
+                    updateMetric(metricCache.get(jsonMetric.getName()), jsonMetric.getValue());
+                }
             } catch (IOException e) {
                 logger.error("IO error: " + e);
             }
 		}
 	}
 
-	public void shutdown() {
+    private Metric createMetric(JSONMetric jsonMetric) {
+	    // Split the name from the JSON on dots for the metric group/type/name
+	    MetricName metricName;
+	    List<String> parts = Arrays.asList(jsonMetric.getName().split("\\."));
+	    if (parts.size() >= 3)
+	        metricName = new MetricName(parts.remove(0), parts.remove(0), StringUtils.join(parts));
+	    else
+	        metricName = new MetricName(jsonMetric.getName(), "", "");
+	    
+	    Class<?> metricType = jsonMetric.getMetricClass();
+	    if (metricType == GaugeMetric.class) {
+	        // TODO do gauges even make sense?
+		} else if (metricType == CounterMetric.class) {
+		    return Metrics.newCounter(metricName);
+		} else if (metricType == MeterMetric.class) {
+		    // TODO timeunit
+		    return Metrics.newMeter(metricName, jsonMetric.getName(), TimeUnit.MINUTES);
+        } else if (metricType == HistogramMetric.class) {
+            return Metrics.newHistogram(metricName, jsonMetric.isBiased());
+        } else if (metricType == TimerMetric.class) {
+            return Metrics.newTimer(metricName, TimeUnit.MILLISECONDS, TimeUnit.SECONDS);
+        }
+	    
+	    // Uh-oh
+	    return null;
+    }
+
+    /**
+	 * Update various metric types.
+	 *
+	 * Gauge:
+	 *
+	 * Counter:
+	 *     Increment or decrement based upon sign of value
+	 *     Clear counter if given 0
+	 *
+	 * Meter:
+	 *     mark() the meter with the given value
+	 *
+	 * Histogram:
+	 *     update() the histogram with the given value
+	 *
+	 * Timer:
+	 *
+	 * @param metric
+	 * @param value
+	 */
+	private void updateMetric(Metric metric, long value) {
+	    if (metric.getClass() == GaugeMetric.class) {
+	        // TODO do gauges even make sense?
+		} else if (metric.getClass() == CounterMetric.class) {
+		    if (value > 0)
+		        ((CounterMetric)metric).inc(value);
+		    else if (value < 0)
+		        ((CounterMetric)metric).dec(value * -1);
+		    else
+		        ((CounterMetric)metric).clear();
+		} else if (metric.getClass() == MeterMetric.class) {
+	        ((MeterMetric)metric).mark(value);
+        } else if (metric.getClass() == HistogramMetric.class) {
+	        ((HistogramMetric)metric).update(value);
+        } else if (metric.getClass() == TimerMetric.class) {
+            // TODO Start or stop based upon sign?
+            // update(duration)
+            // update(duration, TimeUnit)
+            // stop()
+            // clear()
+        }
+    }
+
+    public void shutdown() {
 		shutdown.set(true);
 		this.interrupt();
 	}
