@@ -35,8 +35,8 @@ public class MetricCatcher extends Thread {
     private AbstractReporter reporter;
     private Map<String, Metric> metricCache;
 	
-    public MetricCatcher(int listenPort, AbstractReporter reporter, Map<String, Metric> metricCache) throws IOException {
-        socket = new DatagramSocket(listenPort);
+    public MetricCatcher(DatagramSocket socket, AbstractReporter reporter, Map<String, Metric> metricCache) throws IOException {
+        this.socket = socket;
         this.metricCache = metricCache;
         
         // For sending metrics on to the metric collector
@@ -83,6 +83,8 @@ public class MetricCatcher extends Thread {
                 logger.error("IO error: " + e);
             }
 		}
+		
+		socket.close();
 	}
 
     protected Metric createMetric(JSONMetric jsonMetric) {
@@ -145,6 +147,7 @@ public class MetricCatcher extends Thread {
 		} else if (metric.getClass() == MeterMetric.class) {
 	        ((MeterMetric)metric).mark(value);
         } else if (metric.getClass() == HistogramMetric.class) {
+            // TODO clearing?  How about no, so that we can record 0 values; it'll clear over time...
 	        ((HistogramMetric)metric).update(value);
         } else if (metric.getClass() == TimerMetric.class) {
             // TODO Start or stop based upon sign?

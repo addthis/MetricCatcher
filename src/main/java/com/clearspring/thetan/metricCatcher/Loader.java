@@ -3,6 +3,7 @@ package com.clearspring.thetan.metricCatcher;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.DatagramSocket;
 import java.util.Map;
 import java.util.Properties;
 
@@ -42,8 +43,9 @@ public class Loader {
 		Map<String, Metric> lruMap = new LRUMap<String, Metric>(10, maxMetrics);
 		
 		int port = Integer.parseInt(properties.getProperty("metricCatcher.udp.port"));
+		DatagramSocket socket = new DatagramSocket(port);
 		
-		metricCatcher = new MetricCatcher(port, reporter, lruMap);
+		metricCatcher = new MetricCatcher(socket, reporter, lruMap);
 		metricCatcher.start();
 
 		// Register a shutdown hook and wait for termination
