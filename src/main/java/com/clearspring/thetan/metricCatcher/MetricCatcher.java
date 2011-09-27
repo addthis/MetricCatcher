@@ -85,13 +85,13 @@ public class MetricCatcher extends Thread {
 		}
 	}
 
-    private Metric createMetric(JSONMetric jsonMetric) {
+    protected Metric createMetric(JSONMetric jsonMetric) {
 	    // Split the name from the JSON on dots for the metric group/type/name
 	    MetricName metricName;
-	    List<String> parts = Arrays.asList(jsonMetric.getName().split("\\."));
+	    ArrayList<String> parts = new ArrayList<String>(Arrays.asList(jsonMetric.getName().split("\\.")));
 	    if (parts.size() >= 3)
-	        metricName = new MetricName(parts.remove(0), parts.remove(0), StringUtils.join(parts));
-	    else
+	        metricName = new MetricName(parts.remove(1), parts.remove(1), StringUtils.join(parts));
+        else
 	        metricName = new MetricName(jsonMetric.getName(), "", "");
 	    
 	    Class<?> metricType = jsonMetric.getMetricClass();
@@ -132,7 +132,7 @@ public class MetricCatcher extends Thread {
 	 * @param metric
 	 * @param value
 	 */
-	private void updateMetric(Metric metric, long value) {
+	protected void updateMetric(Metric metric, long value) {
 	    if (metric.getClass() == GaugeMetric.class) {
 	        // TODO do gauges even make sense?
 		} else if (metric.getClass() == CounterMetric.class) {
