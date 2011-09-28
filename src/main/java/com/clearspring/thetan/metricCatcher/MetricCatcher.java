@@ -64,15 +64,10 @@ public class MetricCatcher extends Thread {
 		        // Pull in network data
                 socket.receive(received);
                 byte[] json = received.getData();
-                if (logger.isDebugEnabled()) {
-	                InetAddress senderAddress = received.getAddress();
-	                int senderPort = received.getPort();
-	                logger.debug("Got packet from " + senderAddress + ":" + senderPort);
-                }
-                if (logger.isTraceEnabled()) {
-                    String jsonString = new String(json);
-	                logger.trace("JSON: " + jsonString);
-                }
+                if (logger.isDebugEnabled())
+	                logger.debug("Got packet from " + received.getAddress() + ":" + received.getPort());
+                if (logger.isTraceEnabled())
+	                logger.trace("JSON: " + String.valueOf(json));
                 
                 MetricsMessage jsonMessage = mapper.readValue(json, MetricsMessage.class);
                 // Skip if this packet has been seen already
