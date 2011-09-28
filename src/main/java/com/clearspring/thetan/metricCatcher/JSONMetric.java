@@ -15,9 +15,6 @@ public class JSONMetric {
     public Class<?> getMetricClass() {
         return this.type.getKlass();
     }
-    public void setType(MetricType type) {
-        this.type = type;
-    }
     public void setType(String typeName) {
         this.type = MetricType.fromName(typeName);
     }

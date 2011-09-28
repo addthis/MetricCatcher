@@ -13,6 +13,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.type.TypeReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -68,15 +69,18 @@ public class MetricCatcher extends Thread {
 	                logger.trace("JSON: " + jsonString);
                 }
                 
-                List<JSONMetric> jsonMetrics = mapper.readValue(json, List.class);
+//                TypeReference<List<JSONMetric>> typeRef = new TypeReference<List<JSONMetric>>() {};
+                MetricsMessage jsonMessage = mapper.readValue(json, MetricsMessage.class);
                 // TODO Ditch already-seen packets based upon first element in JSON list
-                for (JSONMetric jsonMetric : jsonMetrics) {
+                for (JSONMetric jsonMetric : jsonMessage.getMetrics()) {
                     if (!metricCache.containsKey(jsonMetric.getName())) {
+                        logger.info("Creating new metric for " + jsonMetric.getName());
                         Metric newMetric = createMetric(jsonMetric);
                         metricCache.put(jsonMetric.getName(), newMetric);
                     }
                     
                     // Record the update
+                    logger.debug("Updating " + jsonMetric.getName() + " with " + jsonMetric.getValue());
                     updateMetric(metricCache.get(jsonMetric.getName()), jsonMetric.getValue());
                 }
             } catch (IOException e) {
