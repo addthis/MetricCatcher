@@ -13,6 +13,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.util.LRUMap;
 import org.codehaus.jackson.type.TypeReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,40 +48,50 @@ public class MetricCatcher extends Thread {
     
 	@Override
 	public void run() {
-	    // XXX
-	    // TODO length of this byte array
-	    // XXX
-	    byte[] data = new byte[1024];
+	    // Arbi-fucking-trary. One metric with a reasonable name is less than 200b
+	    // This (http://stackoverflow.com/q/3712151/17339) implies that 64 bit
+	    // leenuks will handle packets up to 24,258b, so let's assume we won't
+	    // get anything larger than that.  Note that this is a hard limit-you
+	    // can't accumulate from the socket so anything larger is truncated.
+	    byte[] data = new byte[24258];
+	    
+	    // Keep track of the last 1000 packets we've seen
+	    Map<String, Boolean> recentMessages = new LRUMap<String, Boolean>(10, 1000);
 	    
 		while (shutdown.get() == false) {
 		    DatagramPacket received = new DatagramPacket(data, data.length);
 		    try {
+		        // Pull in network data
                 socket.receive(received);
-                
+                byte[] json = received.getData();
                 if (logger.isDebugEnabled()) {
 	                InetAddress senderAddress = received.getAddress();
 	                int senderPort = received.getPort();
 	                logger.debug("Got packet from " + senderAddress + ":" + senderPort);
                 }
-                
-                byte[] json = received.getData();
                 if (logger.isTraceEnabled()) {
                     String jsonString = new String(json);
 	                logger.trace("JSON: " + jsonString);
                 }
                 
-//                TypeReference<List<JSONMetric>> typeRef = new TypeReference<List<JSONMetric>>() {};
                 MetricsMessage jsonMessage = mapper.readValue(json, MetricsMessage.class);
-                // TODO Ditch already-seen packets based upon first element in JSON list
+                // Skip if this packet has been seen already
+                if (recentMessages.containsKey(jsonMessage.getUnique())) {
+                    logger.info("Not processing duplicate message <" + jsonMessage.getUnique() + ">");
+                    continue;
+                }
+                recentMessages.put(jsonMessage.getUnique(), Boolean.TRUE);
+                
+                // Parse all of the metrics in the message
                 for (JSONMetric jsonMetric : jsonMessage.getMetrics()) {
                     if (!metricCache.containsKey(jsonMetric.getName())) {
-                        logger.info("Creating new metric for " + jsonMetric.getName());
+                        logger.info("Creating new metric for '" + jsonMetric.getName() + "'");
                         Metric newMetric = createMetric(jsonMetric);
                         metricCache.put(jsonMetric.getName(), newMetric);
                     }
                     
                     // Record the update
-                    logger.debug("Updating " + jsonMetric.getName() + " with " + jsonMetric.getValue());
+                    logger.debug("Updating '" + jsonMetric.getName() + "' with <" + jsonMetric.getValue() + ">");
                     updateMetric(metricCache.get(jsonMetric.getName()), jsonMetric.getValue());
                 }
             } catch (IOException e) {
