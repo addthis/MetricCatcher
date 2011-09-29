@@ -176,6 +176,25 @@ public class MetricCatcherTest {
     }
     
     @Test
+    public void testRun_DottedName() throws IOException, InterruptedException {
+        metricName = "foo.bar." + metricName;
+		String json = "[" +
+                         "{\"name\":\"" + metricName + "\"," +
+	                      "\"value\":1," +
+	                      "\"type\":\"counter\"," +
+	                      "\"timestamp\":1316647781}" +
+                      "]";
+		byte[] jsonBytes = json.getBytes();
+		sendingSocket.send(new DatagramPacket(jsonBytes, jsonBytes.length, listeningSocket.getLocalAddress(), listeningSocket.getLocalPort()));
+		
+		metricCatcher.start();
+		Thread.sleep(500);
+		metricCatcher.shutdown();
+		
+		assertTrue(metricCache.containsKey(metricName));
+    }
+    
+    @Test
     public void testRun_TimerMetric() throws IOException, InterruptedException {
         double minValue = 73;
         double maxValue = 11111173;
