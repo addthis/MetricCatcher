@@ -22,7 +22,7 @@ public class JSONMetricTest {
 
     @Test
     public void testSetType_MetricType() {
-        jsonMetric.setType(MetricType.GAUGE);
+        jsonMetric.setType("gauge");
         assertEquals(MetricType.GAUGE, jsonMetric.getType());
     }
     
