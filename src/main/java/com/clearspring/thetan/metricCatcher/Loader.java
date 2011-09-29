@@ -7,6 +7,7 @@ import java.net.DatagramSocket;
 import java.util.Map;
 import java.util.Properties;
 
+import org.apache.log4j.PropertyConfigurator;
 import org.codehaus.jackson.map.util.LRUMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -90,6 +91,7 @@ public class Loader {
 	 * @throws Exception
 	 */
 	public static void main(String[] args) throws Exception {
+	    PropertyConfigurator.configure(System.getProperty("log4j.configuration"));
 		String propertiesFilename = defaultPropertiesFilename;
 
 		// Command line arguments
