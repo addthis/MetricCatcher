@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -64,23 +66,26 @@ public class MetricCatcher extends Thread {
 		        // Pull in network data
                 socket.receive(received);
                 byte[] json = received.getData();
+                String jsonMD5 = md5Hex(json);
                 if (logger.isDebugEnabled())
 	                logger.debug("Got packet from " + received.getAddress() + ":" + received.getPort());
                 if (logger.isTraceEnabled()) {
                     String jsonString = new String(json);
-	                logger.trace("JSON: " + jsonString);
+	                logger.trace("JSON: " + jsonString + " MD5: " + jsonMD5);
                 }
                 
-                MetricsMessage jsonMessage = mapper.readValue(json, MetricsMessage.class);
                 // Skip if this packet has been seen already
-                if (recentMessages.containsKey(jsonMessage.getUnique())) {
-                    logger.info("Not processing duplicate message <" + jsonMessage.getUnique() + ">");
+                if (recentMessages.containsKey(jsonMD5)) {
+                    logger.info("Not processing duplicate message <" + jsonMD5 + ">");
                     continue;
                 }
-                recentMessages.put(jsonMessage.getUnique(), Boolean.TRUE);
+                recentMessages.put(jsonMD5, Boolean.TRUE);
+                
+                TypeReference<List<JSONMetric>> typeRef = new TypeReference<List<JSONMetric>>() {};
+                List<JSONMetric> jsonMetrics = mapper.readValue(json, typeRef);
                 
                 // Parse all of the metrics in the message
-                for (JSONMetric jsonMetric : jsonMessage.getMetrics()) {
+                for (JSONMetric jsonMetric : jsonMetrics) {
                     if (!metricCache.containsKey(jsonMetric.getName())) {
                         logger.info("Creating new " + jsonMetric.getType().name() + " metric for '" + jsonMetric.getName() + "'");
                         Metric newMetric = createMetric(jsonMetric);

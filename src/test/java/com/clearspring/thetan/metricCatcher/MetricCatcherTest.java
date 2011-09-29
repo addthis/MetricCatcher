@@ -158,13 +158,12 @@ public class MetricCatcherTest {
     
     @Test
     public void testRun() throws IOException, InterruptedException {
-		String json = "{\"unique\":\"b21407b0dbd00d9b87e68206c600d0bc1316647776\"," +
-		              "\"metrics\":[" +
+		String json = "[" +
                          "{\"name\":\"" + metricName + "\"," +
 	                      "\"value\":1," +
 	                      "\"type\":\"counter\"," +
 	                      "\"timestamp\":1316647781}" +
-                      "]}";
+                      "]";
 		byte[] jsonBytes = json.getBytes();
 		sendingSocket.send(new DatagramPacket(jsonBytes, jsonBytes.length, listeningSocket.getLocalAddress(), listeningSocket.getLocalPort()));
 		
@@ -180,23 +179,21 @@ public class MetricCatcherTest {
         String json;
         byte[] jsonBytes;
         
-		json = "{\"unique\":\"foo\"," +
-               "\"metrics\":[" +
+		json = "[" +
                     "{\"name\":\"" + metricName +
                     "\",\"value\":1," +
                     "\"type\":\"counter\"," +
                     "\"timestamp\":1316647781}" +
-                "]}";
+                "]";
 		jsonBytes = json.getBytes();
 		sendingSocket.send(new DatagramPacket(jsonBytes, jsonBytes.length, listeningSocket.getLocalAddress(), listeningSocket.getLocalPort()));
 		
-		json = "{\"unique\":\"bar\"," +
-               "\"metrics\":[" +
+		json = "[" +
                     "{\"name\":\"" + metricName +
                     "\",\"value\":1," +
                     "\"type\":\"counter\"," +
                     "\"timestamp\":1316647783}" +
-               "]}";
+               "]";
 		jsonBytes = json.getBytes();
 		sendingSocket.send(new DatagramPacket(jsonBytes, jsonBytes.length, listeningSocket.getLocalAddress(), listeningSocket.getLocalPort()));
 		
@@ -212,23 +209,21 @@ public class MetricCatcherTest {
         String json;
         byte[] jsonBytes;
         
-		json = "{\"unique\":\"foo\"," +
-               "\"metrics\":[" +
+		json = "[" +
                     "{\"name\":\"" + metricName +
                     "\",\"value\":1," +
                     "\"type\":\"counter\"," +
                     "\"timestamp\":1316647781}" +
-                "]}";
+                "]";
 		jsonBytes = json.getBytes();
 		sendingSocket.send(new DatagramPacket(jsonBytes, jsonBytes.length, listeningSocket.getLocalAddress(), listeningSocket.getLocalPort()));
 		
-		json = "{\"unique\":\"foo\"," +
-               "\"metrics\":[" +
+		json = "[" +
                     "{\"name\":\"" + metricName +
                     "\",\"value\":1," +
                     "\"type\":\"counter\"," +
                     "\"timestamp\":1316647783}" +
-               "]}";
+               "]";
 		jsonBytes = json.getBytes();
 		sendingSocket.send(new DatagramPacket(jsonBytes, jsonBytes.length, listeningSocket.getLocalAddress(), listeningSocket.getLocalPort()));
 		
@@ -242,8 +237,7 @@ public class MetricCatcherTest {
     @Test
     public void testRun_MultipleUpdatesInOnePacket() throws IOException, InterruptedException {
         String secondMetricName = metricName + "2";
-		String json = "{\"unique\":\"foo\"," +
-		              "\"metrics\":[" +
+		String json = "[" +
 		                   "{\"name\":\"" + metricName +
 		                   "\",\"value\":1," +
 		                   "\"type\":\"counter\"," +
@@ -252,7 +246,7 @@ public class MetricCatcherTest {
 		                   "\",\"value\":7," +
 		                   "\"type\":\"meter\"," +
 		                   "\"timestamp\":1316647781}" +
-		              "]}";
+		              "]";
 		byte[] jsonBytes = json.getBytes();
 		sendingSocket.send(new DatagramPacket(jsonBytes, jsonBytes.length, listeningSocket.getLocalAddress(), listeningSocket.getLocalPort()));
 		
@@ -263,14 +257,4 @@ public class MetricCatcherTest {
 		assertEquals(1, ((CounterMetric)metricCache.get(metricName)).count());
 		assertEquals(7, ((MeterMetric)metricCache.get(secondMetricName)).count());
     }
-
-//    @Test
-//    public void testRun() throws IOException {
-//        // Force feed a metric into the catcher
-//        AbstractReporter reporter = mock(AbstractReporter.class);
-//		Map<String, Metric> metricCache = new LRUMap<String, Metric>(10, 10);
-//        Metric metric = metricCatcher.createMetric(jsonMetric);
-//        metricCache.put(metricName, metric);
-//        metricCatcher = new MetricCatcher(new DatagramSocket(), reporter, metricCache);
-//    }
 }
