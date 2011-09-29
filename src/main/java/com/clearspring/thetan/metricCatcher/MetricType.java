@@ -10,7 +10,8 @@ public enum MetricType {
     GAUGE ("gauge", GaugeMetric.class),
     COUNTER ("counter", CounterMetric.class),
     METER ("meter", MeterMetric.class),
-    HISTOGRAM ("histogram", HistogramMetric.class),
+    HISTOGRAM_BIASED ("biased", HistogramMetric.class),
+    HISTOGRAM_UNIFORM ("uniform", HistogramMetric.class),
     TIMER ("timer", TimerMetric.class);
     
     private String name;
