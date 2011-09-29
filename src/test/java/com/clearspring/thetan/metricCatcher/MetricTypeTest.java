@@ -31,6 +31,6 @@ public class MetricTypeTest {
     
     @Test
     public void testKlass() {
-        assertEquals(HistogramMetric.class, MetricType.HISTOGRAM.getKlass());
+        assertEquals(HistogramMetric.class, MetricType.HISTOGRAM_BIASED.getKlass());
     }
 }

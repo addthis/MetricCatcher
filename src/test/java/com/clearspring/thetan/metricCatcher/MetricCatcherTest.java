@@ -148,8 +148,8 @@ public class MetricCatcherTest {
     }
     
     @Test
-    public void testUpdateMetric_Histogram() {
-        jsonMetric.setType("histogram");
+    public void testUpdateMetric_Histogram_Biased() {
+        jsonMetric.setType("biased");
         jsonMetric.setBiased(false);
         HistogramMetric metric = (HistogramMetric)metricCatcher.createMetric(jsonMetric);
         
