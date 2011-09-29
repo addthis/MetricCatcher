@@ -48,6 +48,10 @@ public class MetricCatcher extends Thread {
         this.reporter.start(60, TimeUnit.SECONDS);
     }
     
+    /**
+     * Grab metric messages off the listening socket, creating and updating
+     * them as needed.
+     */
 	@Override
 	public void run() {
 	    // Arbi-fucking-trary. One metric with a reasonable name is less than 200b
@@ -104,6 +108,12 @@ public class MetricCatcher extends Thread {
 		socket.close();
 	}
 
+	/**
+	 * Create a Metric object from a JSONMetric
+	 * 
+	 * @param jsonMetric A JSONMetric to make a Metric from
+	 * @return A Metric equivalent to the given JSONMetric
+	 */
     protected Metric createMetric(JSONMetric jsonMetric) {
 	    // Split the name from the JSON on dots for the metric group/type/name
 	    MetricName metricName;
@@ -115,7 +125,7 @@ public class MetricCatcher extends Thread {
 	    
 	    Class<?> metricType = jsonMetric.getMetricClass();
 	    if (metricType == GaugeMetric.class) {
-	        // TODO do gauges even make sense?
+	        return Metrics.newGauge(metricName, new GaugeMetricImpl());
 		} else if (metricType == CounterMetric.class) {
 		    return Metrics.newCounter(metricName);
 		} else if (metricType == MeterMetric.class) {
@@ -148,12 +158,12 @@ public class MetricCatcher extends Thread {
 	 *
 	 * Timer:
 	 *
-	 * @param metric
-	 * @param value
+	 * @param metric The metric to update
+	 * @param value The value to supply when updating the metric
 	 */
 	protected void updateMetric(Metric metric, long value) {
 	    if (metric.getClass() == GaugeMetric.class) {
-	        // TODO do gauges even make sense?
+		        ((GaugeMetricImpl)metric).setValue(value);
 		} else if (metric.getClass() == CounterMetric.class) {
 		    if (value > 0)
 		        ((CounterMetric)metric).inc(value);
