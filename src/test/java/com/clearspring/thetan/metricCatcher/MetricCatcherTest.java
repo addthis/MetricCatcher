@@ -21,6 +21,7 @@ import com.yammer.metrics.core.HistogramMetric;
 import com.yammer.metrics.core.MeterMetric;
 import com.yammer.metrics.core.Metric;
 import com.yammer.metrics.core.MetricName;
+import com.yammer.metrics.core.TimerMetric;
 import com.yammer.metrics.reporting.AbstractReporter;
 
 public class MetricCatcherTest {
@@ -175,6 +176,32 @@ public class MetricCatcherTest {
     }
     
     @Test
+    public void testRun_TimerMetric() throws IOException, InterruptedException {
+        double minValue = 73;
+        double maxValue = 11111173;
+		String json = "[" +
+                         "{\"name\":\"" + metricName + "\"," +
+	                      "\"value\":" + minValue + "," +
+	                      "\"type\":\"timer\"," +
+	                      "\"timestamp\":1316647781}," +
+                         "{\"name\":\"" + metricName + "\"," +
+	                      "\"value\":" + maxValue + "," +
+	                      "\"type\":\"timer\"," +
+	                      "\"timestamp\":1316647781}" +
+                      "]";
+		byte[] jsonBytes = json.getBytes();
+		sendingSocket.send(new DatagramPacket(jsonBytes, jsonBytes.length, listeningSocket.getLocalAddress(), listeningSocket.getLocalPort()));
+		
+		metricCatcher.start();
+		Thread.sleep(500);
+		metricCatcher.shutdown();
+		
+		double minval = ((TimerMetric)metricCache.get(metricName)).min();
+		assertEquals(minValue, minval, 1);
+		assertEquals(maxValue, ((TimerMetric)metricCache.get(metricName)).max(), 1);
+    }
+    
+    @Test
     public void testRun_MultipleUpdatePackets() throws IOException, InterruptedException {
         String json;
         byte[] jsonBytes;
@@ -222,7 +249,7 @@ public class MetricCatcherTest {
                     "{\"name\":\"" + metricName +
                     "\",\"value\":1," +
                     "\"type\":\"counter\"," +
-                    "\"timestamp\":1316647783}" +
+                    "\"timestamp\":1316647781}" +
                "]";
 		jsonBytes = json.getBytes();
 		sendingSocket.send(new DatagramPacket(jsonBytes, jsonBytes.length, listeningSocket.getLocalAddress(), listeningSocket.getLocalPort()));

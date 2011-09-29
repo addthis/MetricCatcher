@@ -3,9 +3,6 @@ package com.clearspring.thetan.metricCatcher;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-import java.net.InetAddress;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -13,6 +10,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.util.LRUMap;
@@ -70,7 +68,7 @@ public class MetricCatcher extends Thread {
 		        // Pull in network data
                 socket.receive(received);
                 byte[] json = received.getData();
-                String jsonMD5 = md5Hex(json);
+                String jsonMD5 = DigestUtils.md5Hex(json);
                 if (logger.isDebugEnabled())
 	                logger.debug("Got packet from " + received.getAddress() + ":" + received.getPort());
                 if (logger.isTraceEnabled()) {
@@ -134,7 +132,7 @@ public class MetricCatcher extends Thread {
         } else if (metricType == HistogramMetric.class) {
             return Metrics.newHistogram(metricName, jsonMetric.isBiased());
         } else if (metricType == TimerMetric.class) {
-            return Metrics.newTimer(metricName, TimeUnit.MILLISECONDS, TimeUnit.SECONDS);
+            return Metrics.newTimer(metricName, TimeUnit.MICROSECONDS, TimeUnit.SECONDS);
         }
 	    
 	    // Uh-oh
@@ -177,11 +175,7 @@ public class MetricCatcher extends Thread {
             // TODO clearing?  How about no, so that we can record 0 values; it'll clear over time...
 	        ((HistogramMetric)metric).update(value);
         } else if (metric.getClass() == TimerMetric.class) {
-            // TODO Start or stop based upon sign?
-            // update(duration)
-            // update(duration, TimeUnit)
-            // stop()
-            // clear()
+	        ((TimerMetric)metric).update(value, TimeUnit.MICROSECONDS);
         }
     }
 
