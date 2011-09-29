@@ -179,8 +179,14 @@ public class MetricCatcher extends Thread {
         }
     }
 
+	/**
+	 * Shutdown this MetricCatcher
+	 */
     public void shutdown() {
+        logger.info("Got shutdown signal");
 		shutdown.set(true);
+        logger.debug("Shutdown set");
 		this.interrupt();
+        logger.info("Done shutting down");
 	}
 }

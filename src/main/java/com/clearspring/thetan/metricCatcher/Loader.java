@@ -20,6 +20,12 @@ public class Loader {
 	
 	private MetricCatcher metricCatcher;
 	
+	/**
+	 * Load properties, build a MetricCatcher, start catching
+	 * 
+	 * @param propertiesFile The config file
+	 * @throws IOException if the properties file cannot be read
+	 */
 	public Loader(File propertiesFile) throws IOException {
 		logger.info("Starting metricCatcher");
 		
@@ -56,6 +62,9 @@ public class Loader {
 		});
 	}
 	
+	/**
+	 * Shut down the metric catcher
+	 */
 	public void shutdown() {
 		logger.info("shutting down...");
 		
@@ -71,6 +80,13 @@ public class Loader {
 		}
 	}	
 	
+	/**
+	 * Create a loader with the given properties file, if specified
+	 * on the command line.
+	 * 
+	 * @param args Optional '-c' to define a configuration file
+	 * @throws Exception
+	 */
 	public static void main(String[] args) throws Exception {
 		String propertiesFilename = defaultPropertiesFilename;
 
