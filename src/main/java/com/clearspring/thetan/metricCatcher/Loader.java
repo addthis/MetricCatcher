@@ -51,6 +51,8 @@ public class Loader {
 		int port = Integer.parseInt(properties.getProperty("metricCatcher.udp.port"));
 		DatagramSocket socket = new DatagramSocket(port);
 		
+		logger.info("Metrics destination: " + gangliaHost + ":" + gangliaPort);
+		logger.info("Listening on port " + port);
 		metricCatcher = new MetricCatcher(socket, reporter, lruMap);
 		metricCatcher.start();
 
