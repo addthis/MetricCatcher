@@ -66,8 +66,10 @@ public class MetricCatcher extends Thread {
                 byte[] json = received.getData();
                 if (logger.isDebugEnabled())
 	                logger.debug("Got packet from " + received.getAddress() + ":" + received.getPort());
-                if (logger.isTraceEnabled())
-	                logger.trace("JSON: " + String.valueOf(json));
+                if (logger.isTraceEnabled()) {
+                    String jsonString = new String(json);
+	                logger.trace("JSON: " + jsonString);
+                }
                 
                 MetricsMessage jsonMessage = mapper.readValue(json, MetricsMessage.class);
                 // Skip if this packet has been seen already
@@ -80,7 +82,7 @@ public class MetricCatcher extends Thread {
                 // Parse all of the metrics in the message
                 for (JSONMetric jsonMetric : jsonMessage.getMetrics()) {
                     if (!metricCache.containsKey(jsonMetric.getName())) {
-                        logger.info("Creating new metric for '" + jsonMetric.getName() + "'");
+                        logger.info("Creating new " + jsonMetric.getType().name() + " metric for '" + jsonMetric.getName() + "'");
                         Metric newMetric = createMetric(jsonMetric);
                         metricCache.put(jsonMetric.getName(), newMetric);
                     }
