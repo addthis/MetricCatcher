@@ -7,6 +7,7 @@ import static org.mockito.Mockito.mock;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -32,6 +33,7 @@ public class MetricCatcherTest {
     DatagramSocket listeningSocket;
     Map<String, Metric> metricCache;
     AbstractReporter reporter;
+    InetAddress localhost;
         
     @Before
     public void setUp() throws Exception {
@@ -48,6 +50,7 @@ public class MetricCatcherTest {
         jsonMetric.setTimestamp(((int)System.currentTimeMillis() / 1000));
         
 		sendingSocket = new DatagramSocket();
+		localhost = InetAddress.getByName("127.0.0.1");
     }
 
     @After
@@ -166,7 +169,7 @@ public class MetricCatcherTest {
 	                      "\"timestamp\":1316647781}" +
                       "]";
 		byte[] jsonBytes = json.getBytes();
-		sendingSocket.send(new DatagramPacket(jsonBytes, jsonBytes.length, listeningSocket.getLocalAddress(), listeningSocket.getLocalPort()));
+		sendingSocket.send(new DatagramPacket(jsonBytes, jsonBytes.length, localhost, listeningSocket.getLocalPort()));
 		
 		metricCatcher.start();
 		Thread.sleep(500);
@@ -184,7 +187,7 @@ public class MetricCatcherTest {
 	                      "\"timestamp\":1316647781.712494}" +
                       "]";
 		byte[] jsonBytes = json.getBytes();
-		sendingSocket.send(new DatagramPacket(jsonBytes, jsonBytes.length, listeningSocket.getLocalAddress(), listeningSocket.getLocalPort()));
+		sendingSocket.send(new DatagramPacket(jsonBytes, jsonBytes.length, localhost, listeningSocket.getLocalPort()));
 		
 		metricCatcher.start();
 		Thread.sleep(500);
@@ -203,7 +206,7 @@ public class MetricCatcherTest {
 	                      "\"timestamp\":1316647781}" +
                       "]";
 		byte[] jsonBytes = json.getBytes();
-		sendingSocket.send(new DatagramPacket(jsonBytes, jsonBytes.length, listeningSocket.getLocalAddress(), listeningSocket.getLocalPort()));
+		sendingSocket.send(new DatagramPacket(jsonBytes, jsonBytes.length, localhost, listeningSocket.getLocalPort()));
 		
 		metricCatcher.start();
 		Thread.sleep(500);
@@ -227,7 +230,7 @@ public class MetricCatcherTest {
 	                      "\"timestamp\":1316647781}" +
                       "]";
 		byte[] jsonBytes = json.getBytes();
-		sendingSocket.send(new DatagramPacket(jsonBytes, jsonBytes.length, listeningSocket.getLocalAddress(), listeningSocket.getLocalPort()));
+		sendingSocket.send(new DatagramPacket(jsonBytes, jsonBytes.length, localhost, listeningSocket.getLocalPort()));
 		
 		metricCatcher.start();
 		Thread.sleep(500);
@@ -250,7 +253,7 @@ public class MetricCatcherTest {
                     "\"timestamp\":1316647781}" +
                 "]";
 		jsonBytes = json.getBytes();
-		sendingSocket.send(new DatagramPacket(jsonBytes, jsonBytes.length, listeningSocket.getLocalAddress(), listeningSocket.getLocalPort()));
+		sendingSocket.send(new DatagramPacket(jsonBytes, jsonBytes.length, localhost, listeningSocket.getLocalPort()));
 		
 		json = "[" +
                     "{\"name\":\"" + metricName +
@@ -259,7 +262,7 @@ public class MetricCatcherTest {
                     "\"timestamp\":1316647783}" +
                "]";
 		jsonBytes = json.getBytes();
-		sendingSocket.send(new DatagramPacket(jsonBytes, jsonBytes.length, listeningSocket.getLocalAddress(), listeningSocket.getLocalPort()));
+		sendingSocket.send(new DatagramPacket(jsonBytes, jsonBytes.length, localhost, listeningSocket.getLocalPort()));
 		
 		metricCatcher.start();
 		Thread.sleep(500);
@@ -280,7 +283,7 @@ public class MetricCatcherTest {
                     "\"timestamp\":1316647781}" +
                 "]";
 		jsonBytes = json.getBytes();
-		sendingSocket.send(new DatagramPacket(jsonBytes, jsonBytes.length, listeningSocket.getLocalAddress(), listeningSocket.getLocalPort()));
+		sendingSocket.send(new DatagramPacket(jsonBytes, jsonBytes.length, localhost, listeningSocket.getLocalPort()));
 		
 		json = "[" +
                     "{\"name\":\"" + metricName +
@@ -289,7 +292,7 @@ public class MetricCatcherTest {
                     "\"timestamp\":1316647781}" +
                "]";
 		jsonBytes = json.getBytes();
-		sendingSocket.send(new DatagramPacket(jsonBytes, jsonBytes.length, listeningSocket.getLocalAddress(), listeningSocket.getLocalPort()));
+		sendingSocket.send(new DatagramPacket(jsonBytes, jsonBytes.length, localhost, listeningSocket.getLocalPort()));
 		
 		metricCatcher.start();
 		Thread.sleep(500);
@@ -312,7 +315,7 @@ public class MetricCatcherTest {
 		                   "\"timestamp\":1316647781}" +
 		              "]";
 		byte[] jsonBytes = json.getBytes();
-		sendingSocket.send(new DatagramPacket(jsonBytes, jsonBytes.length, listeningSocket.getLocalAddress(), listeningSocket.getLocalPort()));
+		sendingSocket.send(new DatagramPacket(jsonBytes, jsonBytes.length, localhost, listeningSocket.getLocalPort()));
 		
 		metricCatcher.start();
 		Thread.sleep(500);
