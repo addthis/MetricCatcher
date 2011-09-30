@@ -162,23 +162,23 @@ public class MetricCatcher extends Thread {
 	 * @param metric The metric to update
 	 * @param value The value to supply when updating the metric
 	 */
-	protected void updateMetric(Metric metric, long value) {
+	protected void updateMetric(Metric metric, double value) {
 	    if (metric.getClass() == GaugeMetric.class) {
-		        ((GaugeMetricImpl)metric).setValue(value);
+		        ((GaugeMetricImpl)metric).setValue((long)value);
 		} else if (metric.getClass() == CounterMetric.class) {
 		    if (value > 0)
-		        ((CounterMetric)metric).inc(value);
+		        ((CounterMetric)metric).inc((long)value);
 		    else if (value < 0)
-		        ((CounterMetric)metric).dec(value * -1);
+		        ((CounterMetric)metric).dec((long)value * -1);
 		    else
 		        ((CounterMetric)metric).clear();
 		} else if (metric.getClass() == MeterMetric.class) {
-	        ((MeterMetric)metric).mark(value);
+	        ((MeterMetric)metric).mark((long)value);
         } else if (metric.getClass() == HistogramMetric.class) {
             // TODO clearing?  How about no, so that we can record 0 values; it'll clear over time...
-	        ((HistogramMetric)metric).update(value);
+	        ((HistogramMetric)metric).update((long)value);
         } else if (metric.getClass() == TimerMetric.class) {
-	        ((TimerMetric)metric).update(value, TimeUnit.MICROSECONDS);
+	        ((TimerMetric)metric).update((long)value, TimeUnit.MICROSECONDS);
         }
     }
 

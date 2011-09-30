@@ -4,8 +4,8 @@ package com.clearspring.thetan.metricCatcher;
 public class JSONMetric {
     private MetricType type;
     private String name;
-    private long value;
-    private long timestamp;
+    private double value;
+    private double timestamp;
     // For histograms
     private boolean biased;
     
@@ -26,17 +26,17 @@ public class JSONMetric {
         this.name = name;
     }
     
-    public long getValue() {
+    public double getValue() {
         return value;
     }
-    public void setValue(long value) {
+    public void setValue(double value) {
         this.value = value;
     }
     
-    public long getTimestamp() {
+    public double getTimestamp() {
         return timestamp;
     }
-    public void setTimestamp(long timestamp) {
+    public void setTimestamp(double timestamp) {
         this.timestamp = timestamp;
     }
     
