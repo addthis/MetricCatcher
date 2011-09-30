@@ -61,13 +61,14 @@ public class MetricCatcher extends Thread {
 	    
 	    // Keep track of the last 1000 packets we've seen
 	    Map<String, Boolean> recentMessages = new LRUMap<String, Boolean>(10, 1000);
+	    byte[] json = null;
 	    
 		while (shutdown.get() == false) {
 		    DatagramPacket received = new DatagramPacket(data, data.length);
 		    try {
 		        // Pull in network data
                 socket.receive(received);
-                byte[] json = received.getData();
+                json = received.getData();
                 String jsonMD5 = DigestUtils.md5Hex(json);
                 if (logger.isDebugEnabled())
 	                logger.debug("Got packet from " + received.getAddress() + ":" + received.getPort());
@@ -99,7 +100,9 @@ public class MetricCatcher extends Thread {
                     updateMetric(metricCache.get(jsonMetric.getName()), jsonMetric.getValue());
                 }
             } catch (IOException e) {
-                logger.error("IO error: " + e);
+                logger.warn("IO error: " + e);
+                String jsonString = new String(json);
+                logger.warn("JSON: " + jsonString);
             }
 		}
 		

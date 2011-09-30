@@ -5,7 +5,7 @@ public class JSONMetric {
     private MetricType type;
     private String name;
     private long value;
-    private int timestamp;
+    private long timestamp;
     // For histograms
     private boolean biased;
     
@@ -33,10 +33,10 @@ public class JSONMetric {
         this.value = value;
     }
     
-    public int getTimestamp() {
+    public long getTimestamp() {
         return timestamp;
     }
-    public void setTimestamp(int timestamp) {
+    public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
     }
     
