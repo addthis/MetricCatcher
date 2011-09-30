@@ -133,7 +133,10 @@ public class MetricCatcher extends Thread {
 		    // TODO timeunit
 		    return Metrics.newMeter(metricName, jsonMetric.getName(), TimeUnit.MINUTES);
         } else if (metricType == HistogramMetric.class) {
-            return Metrics.newHistogram(metricName, jsonMetric.isBiased());
+            if (jsonMetric.getType().equals("biased"))
+	            return Metrics.newHistogram(metricName, true);
+            else
+	            return Metrics.newHistogram(metricName, false);
         } else if (metricType == TimerMetric.class) {
             return Metrics.newTimer(metricName, TimeUnit.MICROSECONDS, TimeUnit.SECONDS);
         }

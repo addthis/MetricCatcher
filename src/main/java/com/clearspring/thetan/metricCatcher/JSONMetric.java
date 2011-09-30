@@ -6,8 +6,6 @@ public class JSONMetric {
     private String name;
     private double value;
     private double timestamp;
-    // For histograms
-    private boolean biased;
     
     public MetricType getType() {
         return type;
@@ -38,12 +36,5 @@ public class JSONMetric {
     }
     public void setTimestamp(double timestamp) {
         this.timestamp = timestamp;
-    }
-    
-    public boolean isBiased() {
-        return biased;
-    }
-    public void setBiased(boolean biased) {
-        this.biased = biased;
     }
 }
