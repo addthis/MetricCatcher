@@ -3,3 +3,6 @@
 .project
 .settings/
 target/
+thetan-metricCatcher.iml
+thetan-metricCatcher.ipr
+thetan-metricCatcher.iws
