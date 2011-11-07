@@ -120,7 +120,7 @@ public class MetricCatcher extends Thread {
 	    MetricName metricName;
 	    ArrayList<String> parts = new ArrayList<String>(Arrays.asList(jsonMetric.getName().split("\\.")));
 	    if (parts.size() >= 3)
-	        metricName = new MetricName(parts.remove(1), parts.remove(1), StringUtils.join(parts, "."));
+	        metricName = new MetricName(parts.remove(0), parts.remove(0), StringUtils.join(parts, "."));
         else
 	        metricName = new MetricName(jsonMetric.getName(), "", "");
 	    
