@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import com.yammer.metrics.reporting.AbstractPollingReporter;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -34,10 +35,10 @@ public class MetricCatcher extends Thread {
     
     private ObjectMapper mapper = new ObjectMapper();
     private DatagramSocket socket;
-    private AbstractReporter reporter;
+    private AbstractPollingReporter reporter;
     private Map<String, Metric> metricCache;
 	
-    public MetricCatcher(DatagramSocket socket, AbstractReporter reporter, Map<String, Metric> metricCache) throws IOException {
+    public MetricCatcher(DatagramSocket socket, AbstractPollingReporter reporter, Map<String, Metric> metricCache) throws IOException {
         this.socket = socket;
         this.metricCache = metricCache;
         

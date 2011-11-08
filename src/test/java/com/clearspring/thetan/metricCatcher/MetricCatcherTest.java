@@ -11,6 +11,7 @@ import java.net.InetAddress;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import com.yammer.metrics.reporting.AbstractPollingReporter;
 import org.codehaus.jackson.map.util.LRUMap;
 import org.junit.After;
 import org.junit.Before;
@@ -23,7 +24,6 @@ import com.yammer.metrics.core.MeterMetric;
 import com.yammer.metrics.core.Metric;
 import com.yammer.metrics.core.MetricName;
 import com.yammer.metrics.core.TimerMetric;
-import com.yammer.metrics.reporting.AbstractReporter;
 
 public class MetricCatcherTest {
     MetricCatcher metricCatcher;
@@ -32,12 +32,12 @@ public class MetricCatcherTest {
     DatagramSocket sendingSocket;
     DatagramSocket listeningSocket;
     Map<String, Metric> metricCache;
-    AbstractReporter reporter;
+    AbstractPollingReporter reporter;
     InetAddress localhost;
         
     @Before
     public void setUp() throws Exception {
-        reporter = mock(AbstractReporter.class);
+        reporter = mock(AbstractPollingReporter.class);
 		metricCache = new LRUMap<String, Metric>(10, 10);
 		listeningSocket = new DatagramSocket();
         metricCatcher = new MetricCatcher(listeningSocket, reporter, metricCache);
