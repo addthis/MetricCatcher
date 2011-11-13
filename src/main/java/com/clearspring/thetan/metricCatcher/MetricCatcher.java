@@ -3,10 +3,7 @@ package com.clearspring.thetan.metricCatcher;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -35,16 +32,11 @@ public class MetricCatcher extends Thread {
     
     private ObjectMapper mapper = new ObjectMapper();
     private DatagramSocket socket;
-    private AbstractPollingReporter reporter;
     private Map<String, Metric> metricCache;
 	
-    public MetricCatcher(DatagramSocket socket, AbstractPollingReporter reporter, Map<String, Metric> metricCache) throws IOException {
+    public MetricCatcher(DatagramSocket socket, Map<String, Metric> metricCache) throws IOException {
         this.socket = socket;
         this.metricCache = metricCache;
-        
-        // For sending metrics on to the metric collector
-        this.reporter = reporter;
-        this.reporter.start(60, TimeUnit.SECONDS);
     }
     
     /**

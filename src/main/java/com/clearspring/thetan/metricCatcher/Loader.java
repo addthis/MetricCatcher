@@ -4,9 +4,16 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
+import com.yammer.metrics.reporting.AbstractPollingReporter;
+import com.yammer.metrics.reporting.AbstractReporter;
+import com.yammer.metrics.reporting.GraphiteReporter;
 import org.apache.log4j.PropertyConfigurator;
 import org.codehaus.jackson.map.util.LRUMap;
 import org.slf4j.Logger;
@@ -41,20 +48,33 @@ public class Loader {
 			logger.error("error reading properties file: " + e);
 			System.exit(1);
 		}
-		
+
 		String gangliaHost = properties.getProperty("metricCatcher.ganglia.host");
-		int gangliaPort = Integer.parseInt(properties.getProperty("metricCatcher.ganglia.port"));
-		GangliaReporter reporter = new GangliaReporter(gangliaHost, gangliaPort);
-		
-		int maxMetrics = Integer.parseInt(properties.getProperty("metricCatcher.maxMetrics"));
+		String gangliaPort = properties.getProperty("metricCatcher.ganglia.port");
+        if (gangliaHost != null && gangliaPort != null) {
+            logger.info("Creating Ganglia reporter pointed at " + gangliaHost + ":" + gangliaPort);
+            GangliaReporter gangliaReporter = new GangliaReporter(gangliaHost, Integer.parseInt(gangliaPort));
+            gangliaReporter.start(60, TimeUnit.SECONDS);
+        }
+
+        String graphiteHost = properties.getProperty("metricCatcher.graphite.host");
+        String graphitePort = properties.getProperty("metricCatcher.graphite.port");
+        if (graphiteHost != null && graphitePort != null) {
+            String hostname = InetAddress.getLocalHost().getHostName();
+            logger.info("Creating Graphite reporter pointed at " + graphiteHost + ":" + graphitePort + " with prefix " + hostname);
+            GraphiteReporter graphiteReporter = new GraphiteReporter(graphiteHost, Integer.parseInt(graphitePort), hostname);
+            graphiteReporter.start(60, TimeUnit.SECONDS);
+        }
+
+		int maxMetrics = Integer.parseInt(properties.getProperty("metricCatcher.maxMetrics", "500"));
+        logger.info("Max metrics: " + maxMetrics);
 		Map<String, Metric> lruMap = new LRUMap<String, Metric>(10, maxMetrics);
 		
-		int port = Integer.parseInt(properties.getProperty("metricCatcher.udp.port"));
+		int port = Integer.parseInt(properties.getProperty("metricCatcher.udp.port", "1420"));
+        logger.info("Listening on UDP port " + port);
 		DatagramSocket socket = new DatagramSocket(port);
 		
-		logger.info("Metrics destination: " + gangliaHost + ":" + gangliaPort);
-		logger.info("Listening on port " + port);
-		metricCatcher = new MetricCatcher(socket, reporter, lruMap);
+		metricCatcher = new MetricCatcher(socket, lruMap);
 		metricCatcher.start();
 
 		// Register a shutdown hook and wait for termination
