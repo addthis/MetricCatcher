@@ -2,7 +2,6 @@ package com.clearspring.thetan.metricCatcher;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -11,7 +10,6 @@ import java.net.InetAddress;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import com.yammer.metrics.reporting.AbstractPollingReporter;
 import org.codehaus.jackson.map.util.LRUMap;
 import org.junit.After;
 import org.junit.Before;
@@ -32,15 +30,13 @@ public class MetricCatcherTest {
     DatagramSocket sendingSocket;
     DatagramSocket listeningSocket;
     Map<String, Metric> metricCache;
-    AbstractPollingReporter reporter;
     InetAddress localhost;
         
     @Before
     public void setUp() throws Exception {
-        reporter = mock(AbstractPollingReporter.class);
 		metricCache = new LRUMap<String, Metric>(10, 10);
 		listeningSocket = new DatagramSocket();
-        metricCatcher = new MetricCatcher(listeningSocket, reporter, metricCache);
+        metricCatcher = new MetricCatcher(listeningSocket, metricCache);
         
         jsonMetric = new JSONMetric();
         jsonMetric.setType("meter");
