@@ -9,7 +9,7 @@
     <groupId>com.clearspring.thetan</groupId>
     <artifactId>metricCatcher</artifactId>
     <name>metricCatcher</name>
-    <version>0.0.3-SNAPSHOT</version>
+    <version>0.0.3</version>
     <description>Receives metrics on UDP, sends them to Ganglia or Graphite</description>
 
     <properties>
@@ -74,9 +74,9 @@
     </developers>
 
     <scm>
-        <connection>scm:svn:http://svn/thetan/metricCatcher</connection>
-        <developerConnection>scm:svn:http://svn/thetan/metricCatcher/trunk</developerConnection>
-        <url>http://svn/thetan/metricCatcher/trunk</url>
+        <connection>scm:svn:http://svn/thetan/metricCatcher/tags/metricCatcher-0.0.3</connection>
+        <developerConnection>scm:svn:http://svn/thetan/metricCatcher/tags/metricCatcher-0.0.3</developerConnection>
+        <url>http://svn/thetan/metricCatcher/tags/metricCatcher-0.0.3</url>
     </scm>
 
     <build>
