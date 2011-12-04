@@ -122,6 +122,7 @@ public class Loader {
         }
 
         File propertiesFile = new File(propertiesFilename);
+        @SuppressWarnings("unused")
         Loader loader = new Loader(propertiesFile);
     }
 }
