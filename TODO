@@ -1,0 +1,2 @@
+- Allow clearing of histogram metrics (MetricCatcher.updateMetric())
+- Option to have metrics decay, i.e. metrics not touched for period are dropped
