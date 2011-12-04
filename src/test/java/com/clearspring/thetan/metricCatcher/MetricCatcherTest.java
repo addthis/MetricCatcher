@@ -34,8 +34,8 @@ public class MetricCatcherTest {
         
     @Before
     public void setUp() throws Exception {
-		metricCache = new LRUMap<String, Metric>(10, 10);
-		listeningSocket = new DatagramSocket();
+        metricCache = new LRUMap<String, Metric>(10, 10);
+        listeningSocket = new DatagramSocket();
         metricCatcher = new MetricCatcher(listeningSocket, metricCache);
         
         jsonMetric = new JSONMetric();
@@ -45,8 +45,8 @@ public class MetricCatcherTest {
         jsonMetric.setName(metricName);
         jsonMetric.setTimestamp(((int)System.currentTimeMillis() / 1000));
         
-		sendingSocket = new DatagramSocket();
-		localhost = InetAddress.getByName("127.0.0.1");
+        sendingSocket = new DatagramSocket();
+        localhost = InetAddress.getByName("127.0.0.1");
     }
 
     @After
@@ -92,7 +92,7 @@ public class MetricCatcherTest {
         
         int count = 7;
         for (int x = 0; x < 7; x++)
-	        metricCatcher.updateMetric(metric, 1);
+            metricCatcher.updateMetric(metric, 1);
         
         assertEquals(count, metric.count());
     }
@@ -120,7 +120,7 @@ public class MetricCatcherTest {
         
         int count = 7;
         for (int x = 0; x < 7; x++)
-	        metricCatcher.updateMetric(metric, 1);
+            metricCatcher.updateMetric(metric, 1);
         
         assertEquals(count, metric.count());
     }
@@ -157,83 +157,83 @@ public class MetricCatcherTest {
     
     @Test
     public void testRun() throws IOException, InterruptedException {
-		String json = "[" +
+        String json = "[" +
                          "{\"name\":\"" + metricName + "\"," +
-	                      "\"value\":1," +
-	                      "\"type\":\"counter\"," +
-	                      "\"timestamp\":1316647781}" +
+                          "\"value\":1," +
+                          "\"type\":\"counter\"," +
+                          "\"timestamp\":1316647781}" +
                       "]";
-		byte[] jsonBytes = json.getBytes();
-		sendingSocket.send(new DatagramPacket(jsonBytes, jsonBytes.length, localhost, listeningSocket.getLocalPort()));
-		
-		metricCatcher.start();
-		Thread.sleep(500);
-		metricCatcher.shutdown();
-		
-		assertTrue(metricCache.containsKey(metricName));
+        byte[] jsonBytes = json.getBytes();
+        sendingSocket.send(new DatagramPacket(jsonBytes, jsonBytes.length, localhost, listeningSocket.getLocalPort()));
+        
+        metricCatcher.start();
+        Thread.sleep(500);
+        metricCatcher.shutdown();
+        
+        assertTrue(metricCache.containsKey(metricName));
     }
     
     @Test
     public void testRun_LongTimestamp() throws IOException, InterruptedException {
-		String json = "[" +
+        String json = "[" +
                          "{\"name\":\"" + metricName + "\"," +
-	                      "\"value\":1," +
-	                      "\"type\":\"counter\"," +
-	                      "\"timestamp\":1316647781.712494}" +
+                          "\"value\":1," +
+                          "\"type\":\"counter\"," +
+                          "\"timestamp\":1316647781.712494}" +
                       "]";
-		byte[] jsonBytes = json.getBytes();
-		sendingSocket.send(new DatagramPacket(jsonBytes, jsonBytes.length, localhost, listeningSocket.getLocalPort()));
-		
-		metricCatcher.start();
-		Thread.sleep(500);
-		metricCatcher.shutdown();
-		
-		assertTrue(metricCache.containsKey(metricName));
+        byte[] jsonBytes = json.getBytes();
+        sendingSocket.send(new DatagramPacket(jsonBytes, jsonBytes.length, localhost, listeningSocket.getLocalPort()));
+        
+        metricCatcher.start();
+        Thread.sleep(500);
+        metricCatcher.shutdown();
+        
+        assertTrue(metricCache.containsKey(metricName));
     }
     
     @Test
     public void testRun_DottedName() throws IOException, InterruptedException {
         metricName = "foo.bar." + metricName;
-		String json = "[" +
+        String json = "[" +
                          "{\"name\":\"" + metricName + "\"," +
-	                      "\"value\":1," +
-	                      "\"type\":\"counter\"," +
-	                      "\"timestamp\":1316647781}" +
+                          "\"value\":1," +
+                          "\"type\":\"counter\"," +
+                          "\"timestamp\":1316647781}" +
                       "]";
-		byte[] jsonBytes = json.getBytes();
-		sendingSocket.send(new DatagramPacket(jsonBytes, jsonBytes.length, localhost, listeningSocket.getLocalPort()));
-		
-		metricCatcher.start();
-		Thread.sleep(500);
-		metricCatcher.shutdown();
-		
-		assertTrue(metricCache.containsKey(metricName));
+        byte[] jsonBytes = json.getBytes();
+        sendingSocket.send(new DatagramPacket(jsonBytes, jsonBytes.length, localhost, listeningSocket.getLocalPort()));
+        
+        metricCatcher.start();
+        Thread.sleep(500);
+        metricCatcher.shutdown();
+        
+        assertTrue(metricCache.containsKey(metricName));
     }
     
     @Test
     public void testRun_TimerMetric() throws IOException, InterruptedException {
         double minValue = 0.32097400;
         double maxValue = 11111173;
-		String json = "[" +
+        String json = "[" +
                          "{\"name\":\"" + metricName + "\"," +
-	                      "\"value\":" + minValue + "," +
-	                      "\"type\":\"timer\"," +
-	                      "\"timestamp\":1316647781}," +
+                          "\"value\":" + minValue + "," +
+                          "\"type\":\"timer\"," +
+                          "\"timestamp\":1316647781}," +
                          "{\"name\":\"" + metricName + "\"," +
-	                      "\"value\":" + maxValue + "," +
-	                      "\"type\":\"timer\"," +
-	                      "\"timestamp\":1316647781}" +
+                          "\"value\":" + maxValue + "," +
+                          "\"type\":\"timer\"," +
+                          "\"timestamp\":1316647781}" +
                       "]";
-		byte[] jsonBytes = json.getBytes();
-		sendingSocket.send(new DatagramPacket(jsonBytes, jsonBytes.length, localhost, listeningSocket.getLocalPort()));
-		
-		metricCatcher.start();
-		Thread.sleep(500);
-		metricCatcher.shutdown();
-		
-		double minval = ((TimerMetric)metricCache.get(metricName)).min();
-		assertEquals(minValue, minval, 1);
-		assertEquals(maxValue, ((TimerMetric)metricCache.get(metricName)).max(), 1);
+        byte[] jsonBytes = json.getBytes();
+        sendingSocket.send(new DatagramPacket(jsonBytes, jsonBytes.length, localhost, listeningSocket.getLocalPort()));
+        
+        metricCatcher.start();
+        Thread.sleep(500);
+        metricCatcher.shutdown();
+        
+        double minval = ((TimerMetric)metricCache.get(metricName)).min();
+        assertEquals(minValue, minval, 1);
+        assertEquals(maxValue, ((TimerMetric)metricCache.get(metricName)).max(), 1);
     }
     
     @Test
@@ -241,29 +241,29 @@ public class MetricCatcherTest {
         String json;
         byte[] jsonBytes;
         
-		json = "[" +
+        json = "[" +
                     "{\"name\":\"" + metricName +
                     "\",\"value\":1," +
                     "\"type\":\"counter\"," +
                     "\"timestamp\":1316647781}" +
                 "]";
-		jsonBytes = json.getBytes();
-		sendingSocket.send(new DatagramPacket(jsonBytes, jsonBytes.length, localhost, listeningSocket.getLocalPort()));
-		
-		json = "[" +
+        jsonBytes = json.getBytes();
+        sendingSocket.send(new DatagramPacket(jsonBytes, jsonBytes.length, localhost, listeningSocket.getLocalPort()));
+        
+        json = "[" +
                     "{\"name\":\"" + metricName +
                     "\",\"value\":1," +
                     "\"type\":\"counter\"," +
                     "\"timestamp\":1316647783}" +
                "]";
-		jsonBytes = json.getBytes();
-		sendingSocket.send(new DatagramPacket(jsonBytes, jsonBytes.length, localhost, listeningSocket.getLocalPort()));
-		
-		metricCatcher.start();
-		Thread.sleep(500);
-		metricCatcher.shutdown();
-		
-		assertEquals(2, ((CounterMetric)metricCache.get(metricName)).count());
+        jsonBytes = json.getBytes();
+        sendingSocket.send(new DatagramPacket(jsonBytes, jsonBytes.length, localhost, listeningSocket.getLocalPort()));
+        
+        metricCatcher.start();
+        Thread.sleep(500);
+        metricCatcher.shutdown();
+        
+        assertEquals(2, ((CounterMetric)metricCache.get(metricName)).count());
     }
     
     @Test
@@ -271,52 +271,52 @@ public class MetricCatcherTest {
         String json;
         byte[] jsonBytes;
         
-		json = "[" +
+        json = "[" +
                     "{\"name\":\"" + metricName +
                     "\",\"value\":1," +
                     "\"type\":\"counter\"," +
                     "\"timestamp\":1316647781}" +
                 "]";
-		jsonBytes = json.getBytes();
-		sendingSocket.send(new DatagramPacket(jsonBytes, jsonBytes.length, localhost, listeningSocket.getLocalPort()));
-		
-		json = "[" +
+        jsonBytes = json.getBytes();
+        sendingSocket.send(new DatagramPacket(jsonBytes, jsonBytes.length, localhost, listeningSocket.getLocalPort()));
+        
+        json = "[" +
                     "{\"name\":\"" + metricName +
                     "\",\"value\":1," +
                     "\"type\":\"counter\"," +
                     "\"timestamp\":1316647781}" +
                "]";
-		jsonBytes = json.getBytes();
-		sendingSocket.send(new DatagramPacket(jsonBytes, jsonBytes.length, localhost, listeningSocket.getLocalPort()));
-		
-		metricCatcher.start();
-		Thread.sleep(500);
-		metricCatcher.shutdown();
-		
-		assertEquals(1, ((CounterMetric)metricCache.get(metricName)).count());
+        jsonBytes = json.getBytes();
+        sendingSocket.send(new DatagramPacket(jsonBytes, jsonBytes.length, localhost, listeningSocket.getLocalPort()));
+        
+        metricCatcher.start();
+        Thread.sleep(500);
+        metricCatcher.shutdown();
+        
+        assertEquals(1, ((CounterMetric)metricCache.get(metricName)).count());
     }
     
     @Test
     public void testRun_MultipleUpdatesInOnePacket() throws IOException, InterruptedException {
         String secondMetricName = metricName + "2";
-		String json = "[" +
-		                   "{\"name\":\"" + metricName +
-		                   "\",\"value\":1," +
-		                   "\"type\":\"counter\"," +
-		                   "\"timestamp\":1316647781}," +
-		                   "{\"name\":\"" + secondMetricName +
-		                   "\",\"value\":7," +
-		                   "\"type\":\"meter\"," +
-		                   "\"timestamp\":1316647781}" +
-		              "]";
-		byte[] jsonBytes = json.getBytes();
-		sendingSocket.send(new DatagramPacket(jsonBytes, jsonBytes.length, localhost, listeningSocket.getLocalPort()));
-		
-		metricCatcher.start();
-		Thread.sleep(500);
-		metricCatcher.shutdown();
-		
-		assertEquals(1, ((CounterMetric)metricCache.get(metricName)).count());
-		assertEquals(7, ((MeterMetric)metricCache.get(secondMetricName)).count());
+        String json = "[" +
+                           "{\"name\":\"" + metricName +
+                           "\",\"value\":1," +
+                           "\"type\":\"counter\"," +
+                           "\"timestamp\":1316647781}," +
+                           "{\"name\":\"" + secondMetricName +
+                           "\",\"value\":7," +
+                           "\"type\":\"meter\"," +
+                           "\"timestamp\":1316647781}" +
+                      "]";
+        byte[] jsonBytes = json.getBytes();
+        sendingSocket.send(new DatagramPacket(jsonBytes, jsonBytes.length, localhost, listeningSocket.getLocalPort()));
+        
+        metricCatcher.start();
+        Thread.sleep(500);
+        metricCatcher.shutdown();
+        
+        assertEquals(1, ((CounterMetric)metricCache.get(metricName)).count());
+        assertEquals(7, ((MeterMetric)metricCache.get(secondMetricName)).count());
     }
 }
