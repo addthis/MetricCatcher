@@ -46,7 +46,7 @@ public class MetricCatcher extends Thread {
      */
     @Override
     public void run() {
-        // Arbi-fucking-trary. One metric with a reasonable name is less than 200b
+        // Arbitrary. One metric with a reasonable name is less than 200b
         // This (http://stackoverflow.com/q/3712151/17339) implies that 64 bit
         // leenuks will handle packets up to 24,258b, so let's assume we won't
         // get anything larger than that.  Note that this is a hard limit-you
