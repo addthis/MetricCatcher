@@ -31,20 +31,20 @@ public class MetricCatcherTest {
     DatagramSocket listeningSocket;
     Map<String, Metric> metricCache;
     InetAddress localhost;
-        
+
     @Before
     public void setUp() throws Exception {
         metricCache = new LRUMap<String, Metric>(10, 10);
         listeningSocket = new DatagramSocket();
         metricCatcher = new MetricCatcher(listeningSocket, metricCache);
-        
+
         jsonMetric = new JSONMetric();
         jsonMetric.setType("meter");
         // The Metrics class caches created metrics; we want fresh ones
         metricName = "foo.bar.baz.metric" + Math.random();
         jsonMetric.setName(metricName);
         jsonMetric.setTimestamp(((int)System.currentTimeMillis() / 1000));
-        
+
         sendingSocket = new DatagramSocket();
         localhost = InetAddress.getByName("127.0.0.1");
     }
@@ -58,22 +58,22 @@ public class MetricCatcherTest {
         Metric metric = metricCatcher.createMetric(jsonMetric);
 
         assertEquals(MeterMetric.class, metric.getClass());
-        
+
         MeterMetric meterMetric = ((MeterMetric)metric);
         // All metrics are in minutes :-( plz2fix
         assertEquals(TimeUnit.MINUTES, meterMetric.rateUnit());
     }
-    
+
     @Test
     public void testCreateMetric_ShortName() {
         String name = "test" + Math.random();
         jsonMetric.setName(name);
         Metric metric = metricCatcher.createMetric(jsonMetric);
         Map<MetricName, Metric> allMetrics = Metrics.allMetrics();
-        
+
         MetricName metricName = new MetricName(name, "", "");
         assertTrue(allMetrics.containsKey(metricName));
-        
+
         Metric actual = allMetrics.get(metricName);
         assertEquals(metric, actual);
     }
@@ -81,7 +81,7 @@ public class MetricCatcherTest {
     @Test
     public void testUpdateMetric() {
         MeterMetric metric = (MeterMetric)metricCatcher.createMetric(jsonMetric);
-        
+
         metricCatcher.updateMetric(metric, 1);
         assertEquals(1, metric.count());
     }
@@ -89,11 +89,11 @@ public class MetricCatcherTest {
     @Test
     public void testUpdateMetric_MultipleUpdates() {
         MeterMetric metric = (MeterMetric)metricCatcher.createMetric(jsonMetric);
-        
+
         int count = 7;
         for (int x = 0; x < 7; x++)
             metricCatcher.updateMetric(metric, 1);
-        
+
         assertEquals(count, metric.count());
     }
 
@@ -108,20 +108,20 @@ public class MetricCatcherTest {
     public void testUpdateMetric_Counter_Increment() {
         jsonMetric.setType("counter");
         CounterMetric metric = (CounterMetric)metricCatcher.createMetric(jsonMetric);
-        
+
         metricCatcher.updateMetric(metric, 7);
         assertEquals(7, metric.count());
     }
-    
+
     @Test
     public void testUpdateMetric_Counter_IncrementMultipleTimes() {
         jsonMetric.setType("counter");
         CounterMetric metric = (CounterMetric)metricCatcher.createMetric(jsonMetric);
-        
+
         int count = 7;
         for (int x = 0; x < 7; x++)
             metricCatcher.updateMetric(metric, 1);
-        
+
         assertEquals(count, metric.count());
     }
 
@@ -129,32 +129,32 @@ public class MetricCatcherTest {
     public void testUpdateMetric_Counter_Decrement() {
         jsonMetric.setType("counter");
         CounterMetric metric = (CounterMetric)metricCatcher.createMetric(jsonMetric);
-        
+
         metricCatcher.updateMetric(metric, -7);
         assertEquals(-7, metric.count());
     }
-    
+
     @Test
     public void testUpdateMetric_Counter_Clear() {
         jsonMetric.setType("counter");
         CounterMetric metric = (CounterMetric)metricCatcher.createMetric(jsonMetric);
-        
+
         metricCatcher.updateMetric(metric, 1);
         assertEquals(1, metric.count());
-        
+
         metricCatcher.updateMetric(metric, 0);
         assertEquals(0, metric.count());
     }
-    
+
     @Test
     public void testUpdateMetric_Histogram_Biased() {
         jsonMetric.setType("biased");
         HistogramMetric metric = (HistogramMetric)metricCatcher.createMetric(jsonMetric);
-        
+
         metricCatcher.updateMetric(metric, 1);
         assertEquals(1, metric.count());
     }
-    
+
     @Test
     public void testRun() throws IOException, InterruptedException {
         String json = "[" +
@@ -165,14 +165,14 @@ public class MetricCatcherTest {
                       "]";
         byte[] jsonBytes = json.getBytes();
         sendingSocket.send(new DatagramPacket(jsonBytes, jsonBytes.length, localhost, listeningSocket.getLocalPort()));
-        
+
         metricCatcher.start();
         Thread.sleep(500);
         metricCatcher.shutdown();
-        
+
         assertTrue(metricCache.containsKey(metricName));
     }
-    
+
     @Test
     public void testRun_LongTimestamp() throws IOException, InterruptedException {
         String json = "[" +
@@ -183,14 +183,14 @@ public class MetricCatcherTest {
                       "]";
         byte[] jsonBytes = json.getBytes();
         sendingSocket.send(new DatagramPacket(jsonBytes, jsonBytes.length, localhost, listeningSocket.getLocalPort()));
-        
+
         metricCatcher.start();
         Thread.sleep(500);
         metricCatcher.shutdown();
-        
+
         assertTrue(metricCache.containsKey(metricName));
     }
-    
+
     @Test
     public void testRun_DottedName() throws IOException, InterruptedException {
         metricName = "foo.bar." + metricName;
@@ -202,14 +202,14 @@ public class MetricCatcherTest {
                       "]";
         byte[] jsonBytes = json.getBytes();
         sendingSocket.send(new DatagramPacket(jsonBytes, jsonBytes.length, localhost, listeningSocket.getLocalPort()));
-        
+
         metricCatcher.start();
         Thread.sleep(500);
         metricCatcher.shutdown();
-        
+
         assertTrue(metricCache.containsKey(metricName));
     }
-    
+
     @Test
     public void testRun_TimerMetric() throws IOException, InterruptedException {
         double minValue = 0.32097400;
@@ -226,21 +226,21 @@ public class MetricCatcherTest {
                       "]";
         byte[] jsonBytes = json.getBytes();
         sendingSocket.send(new DatagramPacket(jsonBytes, jsonBytes.length, localhost, listeningSocket.getLocalPort()));
-        
+
         metricCatcher.start();
         Thread.sleep(500);
         metricCatcher.shutdown();
-        
+
         double minval = ((TimerMetric)metricCache.get(metricName)).min();
         assertEquals(minValue, minval, 1);
         assertEquals(maxValue, ((TimerMetric)metricCache.get(metricName)).max(), 1);
     }
-    
+
     @Test
     public void testRun_MultipleUpdatePackets() throws IOException, InterruptedException {
         String json;
         byte[] jsonBytes;
-        
+
         json = "[" +
                     "{\"name\":\"" + metricName +
                     "\",\"value\":1," +
@@ -249,7 +249,7 @@ public class MetricCatcherTest {
                 "]";
         jsonBytes = json.getBytes();
         sendingSocket.send(new DatagramPacket(jsonBytes, jsonBytes.length, localhost, listeningSocket.getLocalPort()));
-        
+
         json = "[" +
                     "{\"name\":\"" + metricName +
                     "\",\"value\":1," +
@@ -258,19 +258,19 @@ public class MetricCatcherTest {
                "]";
         jsonBytes = json.getBytes();
         sendingSocket.send(new DatagramPacket(jsonBytes, jsonBytes.length, localhost, listeningSocket.getLocalPort()));
-        
+
         metricCatcher.start();
         Thread.sleep(500);
         metricCatcher.shutdown();
-        
+
         assertEquals(2, ((CounterMetric)metricCache.get(metricName)).count());
     }
-    
+
     @Test
     public void testRun_MultipleIdenticalUpdatePacketsDiscarded() throws IOException, InterruptedException {
         String json;
         byte[] jsonBytes;
-        
+
         json = "[" +
                     "{\"name\":\"" + metricName +
                     "\",\"value\":1," +
@@ -279,7 +279,7 @@ public class MetricCatcherTest {
                 "]";
         jsonBytes = json.getBytes();
         sendingSocket.send(new DatagramPacket(jsonBytes, jsonBytes.length, localhost, listeningSocket.getLocalPort()));
-        
+
         json = "[" +
                     "{\"name\":\"" + metricName +
                     "\",\"value\":1," +
@@ -288,14 +288,14 @@ public class MetricCatcherTest {
                "]";
         jsonBytes = json.getBytes();
         sendingSocket.send(new DatagramPacket(jsonBytes, jsonBytes.length, localhost, listeningSocket.getLocalPort()));
-        
+
         metricCatcher.start();
         Thread.sleep(500);
         metricCatcher.shutdown();
-        
+
         assertEquals(1, ((CounterMetric)metricCache.get(metricName)).count());
     }
-    
+
     @Test
     public void testRun_MultipleUpdatesInOnePacket() throws IOException, InterruptedException {
         String secondMetricName = metricName + "2";
@@ -311,11 +311,11 @@ public class MetricCatcherTest {
                       "]";
         byte[] jsonBytes = json.getBytes();
         sendingSocket.send(new DatagramPacket(jsonBytes, jsonBytes.length, localhost, listeningSocket.getLocalPort()));
-        
+
         metricCatcher.start();
         Thread.sleep(500);
         metricCatcher.shutdown();
-        
+
         assertEquals(1, ((CounterMetric)metricCache.get(metricName)).count());
         assertEquals(7, ((MeterMetric)metricCache.get(secondMetricName)).count());
     }

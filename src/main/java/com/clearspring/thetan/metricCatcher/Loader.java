@@ -45,6 +45,7 @@ public class Loader {
             System.exit(1);
         }
 
+        // Start a Ganglia reporter if specified in the config
         String gangliaHost = properties.getProperty("metricCatcher.ganglia.host");
         String gangliaPort = properties.getProperty("metricCatcher.ganglia.port");
         if (gangliaHost != null && gangliaPort != null) {
@@ -53,6 +54,7 @@ public class Loader {
             gangliaReporter.start(60, TimeUnit.SECONDS);
         }
 
+        // Start a Graphite reporter if specified in the config
         String graphiteHost = properties.getProperty("metricCatcher.graphite.host");
         String graphitePort = properties.getProperty("metricCatcher.graphite.port");
         if (graphiteHost != null && graphitePort != null) {
