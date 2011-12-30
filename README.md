@@ -1,4 +1,4 @@
-# MetricCatcher
+# Description
 
 MetricCatcher is a bookkeeping agent for application metrics.  It utilizes
 Coda Hale's [Metrics](http://github.com/codahale/metrics) package to provide
