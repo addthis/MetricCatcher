@@ -6,7 +6,7 @@
         <version>1.0.7</version>
     </parent>
 
-    <groupId>com.clearspring.thetan</groupId>
+    <groupId>com.clearspring</groupId>
     <artifactId>metricCatcher</artifactId>
     <name>metricCatcher</name>
     <version>0.0.4-SNAPSHOT</version>
@@ -75,9 +75,9 @@
     </developers>
 
     <scm>
-        <connection>scm:svn:http://svn/thetan/metricCatcher</connection>
-        <developerConnection>scm:svn:http://svn/thetan/metricCatcher/trunk</developerConnection>
-        <url>http://svn/thetan/metricCatcher/trunk</url>
+        <connection>scm:svn:git://github.com/clearspring/MetricCatcher.git</connection>
+        <developerConnection>scm:git:git@github.com:clearspring/MetricCatcher.git</developerConnection>
+        <url>https://github.com/clearspring/MetricCatcher</url>
     </scm>
 
     <build>
@@ -115,7 +115,7 @@
                             </descriptorRefs>
                             <archive>
                                 <manifest>
-                                    <mainClass>com.clearspring.thetan.metricCatcher.Loader</mainClass>
+                                    <mainClass>com.clearspring.metricCatcher.Loader</mainClass>
                                 </manifest>
                             </archive>
                         </configuration>
