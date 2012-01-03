@@ -34,20 +34,25 @@ MetricCatcher accepts JSON on UDP port 1420 by default.
 ## A metric
 
 Each metric has a name, type, timestamp, and value. See Coda Hale's [Metrics
-documentation]() for details on the available metric types.
+documentation](http://metrics.codahale.com/getting-started.html) for details on
+the available metric types.  Histograms are either biased (favor more recent
+data) or uniform (weight all data equally) and are referred to as such.
 
-TODO link to Coda Hale's types doc ^^^^^^^^^^^^^^^^
-
-Histogram Metrics have an additional attribute, whether or not they are biased.
-See the documention for Coda Hale's Metrics for further details.
-
-    TODO example of single metric from GDoc
+    {
+        "name":"namespace.metric.name",
+        "value":numeric_value,
+        "type":"[gauge|counter|meter|biased|uniform|timer]",
+        "timestamp":unix_time.millis
+    }
 
 ## A set of metrics
 
 MetricCatcher expects a list of individual metrics as described above.
 
-    TODO example of series of metrics from GDoc
+    [
+        {"name":"foo","value":7,"type":"gauge","timestamp":1320682297.6631},
+        {"name":"bar","value":77,"type":"meter","timestamp":1320682297.6631}
+    ]
 
 # Administrivia
 
