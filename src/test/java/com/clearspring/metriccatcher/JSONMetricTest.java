@@ -1,4 +1,4 @@
-package com.clearspring.thetan.metricCatcher;
+package com.clearspring.metriccatcher;
 
 import static org.junit.Assert.assertEquals;
 

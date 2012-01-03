@@ -1,4 +1,4 @@
-package com.clearspring.thetan.metricCatcher;
+package com.clearspring.metriccatcher;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
