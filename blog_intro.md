@@ -36,6 +36,13 @@ data) or uniform (weight all data equally) and are referred to as such.  The JSO
         }
     ]
 
+Metrics are sent as a JSON list, so multiple individual metrics can be bundled:
+
+    [
+        {"name":"foo","value":7,"type":"gauge","timestamp":1320682297.6631},
+        {"name":"bar","value":77,"type":"meter","timestamp":1320682297.6631}
+    ]
+
 # Where Data Goes
 
 MetricCatcher sends data on to the metrics-collecting agents defined in the `config.properties` file, so go check out
