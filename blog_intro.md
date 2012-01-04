@@ -32,14 +32,12 @@ provides](http://metrics.codahale.com/getting-started.html), except for Health C
 biased (favor more recent data) or uniform (weight all data equally) and are referred to as such.  The JSON format looks
 like this:
 
-    [
-        {
-            "name":"namespace.metric.name",
-            "value":numeric_value,
-            "type":"[gauge|counter|meter|biased|uniform|timer]",
-            "timestamp":unix_time.millis
-        }
-    ]
+    {
+        "name":"namespace.metric.name",
+        "value":numeric_value,
+        "type":"[gauge|counter|meter|biased|uniform|timer]",
+        "timestamp":unix_time.millis
+    }
 
 Metrics are sent as a JSON list, so multiple individual metrics can be bundled:
 
