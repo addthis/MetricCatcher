@@ -1,6 +1,5 @@
 package com.clearspring.metriccatcher;
 
-
 public class JSONMetric {
     private MetricType type;
     private String name;
