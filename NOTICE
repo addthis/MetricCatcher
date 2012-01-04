@@ -1,4 +1,4 @@
 MetricCatcher is wholly dependent upon Coda Hale[1]'s Metrics[2] package.
 
-[1] http://TODO
+[1] http://codahale.com
 [2] http://github.com/codahale/metrics
