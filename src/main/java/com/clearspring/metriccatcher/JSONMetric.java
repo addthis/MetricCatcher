@@ -6,7 +6,7 @@ public class JSONMetric {
     private String name;
     private double value;
     private double timestamp;
-    
+
     public MetricType getType() {
         return type;
     }
@@ -16,21 +16,21 @@ public class JSONMetric {
     public void setType(String typeName) {
         this.type = MetricType.fromName(typeName);
     }
-    
+
     public String getName() {
         return name;
     }
     public void setName(String name) {
         this.name = name;
     }
-    
+
     public double getValue() {
         return value;
     }
     public void setValue(double value) {
         this.value = value;
     }
-    
+
     public double getTimestamp() {
         return timestamp;
     }

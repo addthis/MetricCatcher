@@ -64,11 +64,12 @@ public class MetricCatcher extends Thread {
                 socket.receive(received);
                 json = received.getData();
                 String jsonMD5 = DigestUtils.md5Hex(json);
-                if (logger.isDebugEnabled())
+                if (logger.isDebugEnabled()) {
                     logger.debug("Got packet from " + received.getAddress() + ":" + received.getPort());
-                if (logger.isTraceEnabled()) {
-                    String jsonString = new String(json);
-                    logger.trace("JSON: " + jsonString + " MD5: " + jsonMD5);
+                    if (logger.isTraceEnabled()) {
+                        String jsonString = new String(json);
+                        logger.trace("JSON: " + jsonString + " MD5: " + jsonMD5);
+                    }
                 }
 
                 // Skip if this packet has been seen already
@@ -78,6 +79,7 @@ public class MetricCatcher extends Thread {
                 }
                 recentMessages.put(jsonMD5, Boolean.TRUE);
 
+                // Turn bytes of JSON into JSONMetric objects
                 TypeReference<List<JSONMetric>> typeRef = new TypeReference<List<JSONMetric>>() {};
                 List<JSONMetric> jsonMetrics = mapper.readValue(json, typeRef);
 

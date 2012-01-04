@@ -156,6 +156,18 @@ public class MetricCatcherTest {
     }
 
     @Test
+    public void testUpdateMetric_Histogram_MultipleUpdates() {
+        jsonMetric.setType("biased");
+        HistogramMetric metric = (HistogramMetric)metricCatcher.createMetric(jsonMetric);
+
+        int count = 7;
+        for (int x = 0; x < 7; x++)
+            metricCatcher.updateMetric(metric, 1);
+
+        assertEquals(count, metric.count());
+    }
+
+    @Test
     public void testRun() throws IOException, InterruptedException {
         String json = "[" +
                          "{\"name\":\"" + metricName + "\"," +
@@ -240,12 +252,13 @@ public class MetricCatcherTest {
     public void testRun_MultipleUpdatePackets() throws IOException, InterruptedException {
         String json;
         byte[] jsonBytes;
+        long timestamp = System.currentTimeMillis() / 1000L;
 
         json = "[" +
                     "{\"name\":\"" + metricName +
                     "\",\"value\":1," +
                     "\"type\":\"counter\"," +
-                    "\"timestamp\":1316647781}" +
+                    "\"timestamp\":" + timestamp++ + "}" +
                 "]";
         jsonBytes = json.getBytes();
         sendingSocket.send(new DatagramPacket(jsonBytes, jsonBytes.length, localhost, listeningSocket.getLocalPort()));
@@ -254,7 +267,7 @@ public class MetricCatcherTest {
                     "{\"name\":\"" + metricName +
                     "\",\"value\":1," +
                     "\"type\":\"counter\"," +
-                    "\"timestamp\":1316647783}" +
+                    "\"timestamp\":" + timestamp++ + "}" +
                "]";
         jsonBytes = json.getBytes();
         sendingSocket.send(new DatagramPacket(jsonBytes, jsonBytes.length, localhost, listeningSocket.getLocalPort()));
@@ -264,6 +277,41 @@ public class MetricCatcherTest {
         metricCatcher.shutdown();
 
         assertEquals(2, ((CounterMetric)metricCache.get(metricName)).count());
+    }
+
+    @Test
+    public void testRun_MultipleUpdatePackets_Histograms() throws IOException, InterruptedException {
+        String json;
+        byte[] jsonBytes;
+        double minVal = 2;
+        double maxVal = 7;
+        long timestamp = System.currentTimeMillis() / 1000L;
+
+        json = "[" +
+                    "{\"name\":\"" + metricName +
+                    "\",\"value\":" + maxVal + "," +
+                    "\"type\":\"biased\"," +
+                    "\"timestamp\":" + timestamp++ + "}" +
+                "]";
+        jsonBytes = json.getBytes();
+        sendingSocket.send(new DatagramPacket(jsonBytes, jsonBytes.length, localhost, listeningSocket.getLocalPort()));
+
+        json = "[" +
+                    "{\"name\":\"" + metricName +
+                    "\",\"value\":" + minVal + "," +
+                    "\"type\":\"biased\"," +
+                    "\"timestamp\":" + timestamp++ + "}" +
+               "]";
+        jsonBytes = json.getBytes();
+        sendingSocket.send(new DatagramPacket(jsonBytes, jsonBytes.length, localhost, listeningSocket.getLocalPort()));
+
+        metricCatcher.start();
+        Thread.sleep(500);
+        metricCatcher.shutdown();
+
+        assertEquals(2, ((HistogramMetric)metricCache.get(metricName)).count());
+        assertEquals(minVal, ((HistogramMetric)metricCache.get(metricName)).min(), 0);
+        assertEquals(maxVal, ((HistogramMetric)metricCache.get(metricName)).max(), 0);
     }
 
     @Test
