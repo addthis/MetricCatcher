@@ -35,6 +35,8 @@
             <artifactId>commons-codec</artifactId>
             <version>1.5</version>
         </dependency>
+
+        <!-- Coda Hale's Metrics -->
         <dependency>
             <groupId>com.yammer.metrics</groupId>
             <artifactId>metrics-core</artifactId>
@@ -48,6 +50,11 @@
         <dependency>
             <groupId>com.yammer.metrics</groupId>
             <artifactId>metrics-ganglia</artifactId>
+            <version>${metrics.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.yammer.metrics</groupId>
+            <artifactId>metrics-servlet</artifactId>
             <version>${metrics.version}</version>
         </dependency>
 
