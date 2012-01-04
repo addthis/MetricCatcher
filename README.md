@@ -23,7 +23,7 @@ very minute.
 ## Why you might care
 
 We wrote MetricCatcher in order to take advantage of the statistics that Coda
-Hale's [Metrics](http://github.com/codahale/metrics) provides  in languages that
+Hale's [Metrics](http://github.com/codahale/metrics) provides in languages that
 aren't Java.  It is very useful for things like web applications that don't have
 any in-memory persistance (i.e. process-per-request).
 
