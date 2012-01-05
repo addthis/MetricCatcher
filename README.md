@@ -63,7 +63,9 @@ MetricCatcher was written by [Drew Stephens](http://dinomite.net)
 
 ## License
 
-MetricCatcher is released under the Apache License Version 2.0.
+MetricCatcher is released under the Apache License Version 2.0.  See
+[Apache](http://www.apache.org/licenses/LICENSE-2.0) or the LICENSE file
+in this distribution for details
 
 ## Bugs & so forth
 
