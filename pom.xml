@@ -79,7 +79,7 @@
     </developers>
 
     <scm>
-        <connection>scm:svn:git://github.com/clearspring/MetricCatcher.git</connection>
+        <connection>scm:git:git://github.com/clearspring/MetricCatcher.git</connection>
         <developerConnection>scm:git:git@github.com:clearspring/MetricCatcher.git</developerConnection>
         <url>https://github.com/clearspring/MetricCatcher</url>
     </scm>
