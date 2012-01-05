@@ -5,7 +5,3 @@ JSON processing is done using Jackson: http://jackson.codehaus.org
 String parsing with the help of Apache Commons Lang: http://commons.apache.org/lang
 
 Cryptographic hash functions from Apache Commons Codec: http://commons.apache.org/codec
-
-Unit testing by JUnit: http://www.junit.org
-
-Simple Logging Facade for Java (SLF4J): http://www.slf4j.org
