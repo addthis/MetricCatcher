@@ -7,6 +7,13 @@
     <version>0.0.4-SNAPSHOT</version>
     <description>Receives metrics on UDP, sends them to Ganglia or Graphite</description>
 
+    <repositories>
+        <repository>
+            <id>repo.codahale.com</id>
+            <url>http://repo.codahale.com</url>
+        </repository>
+    </repositories>
+
     <properties>
         <spring.version>2.5.5</spring.version>
         <slf4j.version>1.6.1</slf4j.version>
