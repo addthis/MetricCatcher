@@ -19,8 +19,6 @@
         <slf4j.version>1.6.1</slf4j.version>
         <scala.version>2.8.1</scala.version>
         <metrics.version>2.0.0-BETA18</metrics.version>
-        <!--<github.maven.repository>https://github.com/clearspring/mvn-repo</github.maven.repository>-->
-        <github.maven.repository>file:///Users/drew/Dropbox/sandbox/clearspring/mvn-repo</github.maven.repository>
     </properties>
 
     <dependencies>
@@ -85,17 +83,6 @@
         <developerConnection>scm:git:git://github.com/clearspring/MetricCatcher.git</developerConnection>
         <url>https://github.com/clearspring/MetricCatcher</url>
     </scm>
-
-    <distributionManagement>
-        <repository>
-            <id>repo</id>
-            <url>${github.maven.repository}/releases</url>
-        </repository>
-        <snapshotRepository>
-            <id>snapshot-repo</id>
-            <url>${github.maven.repository}/snapshots</url>
-        </snapshotRepository>
-    </distributionManagement>
 
     <build>
         <plugins>
