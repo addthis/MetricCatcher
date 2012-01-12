@@ -7,6 +7,13 @@
     <version>0.0.6-SNAPSHOT</version>
     <description>Receives metrics on UDP, sends them to Ganglia or Graphite</description>
 
+    <licenses>
+        <license>
+            <name>Apache 2</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+
     <repositories>
         <repository>
             <id>repo.codahale.com</id>
