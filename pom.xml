@@ -6,6 +6,7 @@
     <name>metricCatcher</name>
     <version>0.0.9-SNAPSHOT</version>
     <description>Receives metrics on UDP, sends them to Ganglia or Graphite</description>
+    <url>https://github.com/clearspring/MetricCatcher</url>
 
     <licenses>
         <license>
