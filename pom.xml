@@ -4,7 +4,7 @@
     <groupId>com.clearspring</groupId>
     <artifactId>metricCatcher</artifactId>
     <name>metricCatcher</name>
-    <version>0.0.7-SNAPSHOT</version>
+    <version>0.0.7</version>
     <description>Receives metrics on UDP, sends them to Ganglia or Graphite</description>
 
     <licenses>
