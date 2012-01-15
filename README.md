@@ -54,6 +54,10 @@ MetricCatcher expects a list of individual metrics as described above.
         {"name":"bar","value":77,"type":"meter","timestamp":1320682297.6631}
     ]
 
+## More info
+
+- [A blog post introducing MetricCatcher](http://www.addthis.com/blog/2012/01/05/advanced-metrics-tracking-for-webapps/)
+
 # Administrivia
 
 ## Author
