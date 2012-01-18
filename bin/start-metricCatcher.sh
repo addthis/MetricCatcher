@@ -21,4 +21,4 @@ else
     JAVA=java
 fi
 
-nohup $JAVA -Dlog4j.configuration=$METRICCATCHER_HOME/conf/log4j.properties -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=8089 -Dcom.sun.management.jmxremote.authenticate=false -jar $METRICCATCHER_HOME/lib/metricCatcher-jar-with-dependencies.jar -c $METRICCATCHER_HOME/conf/config.properties $@ &> $METRICCATCHER_HOME/logs/metricCatcher.log &
+nohup $JAVA -Dlog4j.configuration=$METRICCATCHER_HOME/conf/log4j.properties -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=8089 -Dcom.sun.management.jmxremote.authenticate=false -jar $METRICCATCHER_HOME/lib/metriccatcher-jar-with-dependencies.jar -c $METRICCATCHER_HOME/conf/config.properties $@ &> $METRICCATCHER_HOME/logs/metriccatcher.log &

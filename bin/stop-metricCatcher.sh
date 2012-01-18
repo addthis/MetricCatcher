@@ -12,4 +12,4 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-pkill -f 'metricCatcher'
+pkill -f 'metricCatcher-jar-with-dependencies.jar'
