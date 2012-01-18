@@ -58,6 +58,7 @@ MetricCatcher expects a list of individual metrics as described above.
 
 - [A blog post introducing MetricCatcher](http://www.addthis.com/blog/2012/01/05/advanced-metrics-tracking-for-webapps/)
 - [Phetric](https://github.com/clearspring/Phetric): a PHP library for talking to MetricCatcher
+- Coda Hale's [Metrics](http://github.com/codahale/metrics): the center of MetricCatcher
 
 # Administrivia
 
