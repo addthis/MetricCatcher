@@ -75,7 +75,7 @@ in this distribution for details
 
 ## Bugs & so forth
 
-Please reqport bugs or request new features at the GitHub page for
+Please report bugs or request new features at the GitHub page for
 MetricCatcher: http://github.com/clearspring/MetricCatcher
 
 ## Jobs
