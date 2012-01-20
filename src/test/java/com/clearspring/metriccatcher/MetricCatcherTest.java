@@ -330,36 +330,6 @@ public class MetricCatcherTest {
     }
 
     @Test
-    public void testRun_MultipleIdenticalUpdatePacketsDiscarded() throws IOException, InterruptedException {
-        String json;
-        byte[] jsonBytes;
-
-        json = "[" +
-                    "{\"name\":\"" + metricName +
-                    "\",\"value\":1," +
-                    "\"type\":\"counter\"," +
-                    "\"timestamp\":1316647781}" +
-                "]";
-        jsonBytes = json.getBytes();
-        sendingSocket.send(new DatagramPacket(jsonBytes, jsonBytes.length, localhost, listeningSocket.getLocalPort()));
-
-        json = "[" +
-                    "{\"name\":\"" + metricName +
-                    "\",\"value\":1," +
-                    "\"type\":\"counter\"," +
-                    "\"timestamp\":1316647781}" +
-               "]";
-        jsonBytes = json.getBytes();
-        sendingSocket.send(new DatagramPacket(jsonBytes, jsonBytes.length, localhost, listeningSocket.getLocalPort()));
-
-        metricCatcher.start();
-        Thread.sleep(500);
-        metricCatcher.shutdown();
-
-        assertEquals(1, ((CounterMetric)metricCache.get(metricName)).count());
-    }
-
-    @Test
     public void testRun_MultipleUpdatesInOnePacket() throws IOException, InterruptedException {
         String secondMetricName = metricName + "2";
         String json = "[" +

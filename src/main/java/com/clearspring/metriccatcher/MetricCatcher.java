@@ -25,10 +25,8 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.util.LRUMap;
 import org.codehaus.jackson.type.TypeReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,7 +67,6 @@ public class MetricCatcher extends Thread {
         byte[] data = new byte[24258];
 
         // Keep track of the last 1000 packets we've seen
-        Map<String, Boolean> recentMessages = new LRUMap<String, Boolean>(10, 1000);
         byte[] json = null;
 
         while (shutdown.get() == false) {
@@ -78,21 +75,13 @@ public class MetricCatcher extends Thread {
                 // Pull in network data
                 socket.receive(received);
                 json = received.getData();
-                String jsonMD5 = DigestUtils.md5Hex(json);
                 if (logger.isDebugEnabled()) {
                     logger.debug("Got packet from " + received.getAddress() + ":" + received.getPort());
                     if (logger.isTraceEnabled()) {
                         String jsonString = new String(json);
-                        logger.trace("JSON: " + jsonString + " MD5: " + jsonMD5);
+                        logger.trace("JSON: " + jsonString);
                     }
                 }
-
-                // Skip if this packet has been seen already
-                if (recentMessages.containsKey(jsonMD5)) {
-                    logger.info("Not processing duplicate message <" + jsonMD5 + ">");
-                    continue;
-                }
-                recentMessages.put(jsonMD5, Boolean.TRUE);
 
                 // Turn bytes of JSON into JSONMetric objects
                 TypeReference<List<JSONMetric>> typeRef = new TypeReference<List<JSONMetric>>() {};
