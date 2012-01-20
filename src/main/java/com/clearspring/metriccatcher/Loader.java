@@ -46,7 +46,7 @@ public class Loader {
      * @throws IOException if the properties file cannot be read
      */
     public Loader(File propertiesFile) throws IOException {
-        logger.info("Starting metricCatcher");
+        logger.info("Starting metriccatcher");
 
         logger.info("Loading configuration from: " + propertiesFile.getAbsolutePath());
         Properties properties = new Properties();
@@ -61,8 +61,8 @@ public class Loader {
         }
 
         // Start a Ganglia reporter if specified in the config
-        String gangliaHost = properties.getProperty("metricCatcher.ganglia.host");
-        String gangliaPort = properties.getProperty("metricCatcher.ganglia.port");
+        String gangliaHost = properties.getProperty("metriccatcher.ganglia.host");
+        String gangliaPort = properties.getProperty("metriccatcher.ganglia.port");
         if (gangliaHost != null && gangliaPort != null) {
             logger.info("Creating Ganglia reporter pointed at " + gangliaHost + ":" + gangliaPort);
             GangliaReporter gangliaReporter = new GangliaReporter(gangliaHost, Integer.parseInt(gangliaPort));
@@ -70,8 +70,8 @@ public class Loader {
         }
 
         // Start a Graphite reporter if specified in the config
-        String graphiteHost = properties.getProperty("metricCatcher.graphite.host");
-        String graphitePort = properties.getProperty("metricCatcher.graphite.port");
+        String graphiteHost = properties.getProperty("metriccatcher.graphite.host");
+        String graphitePort = properties.getProperty("metriccatcher.graphite.port");
         if (graphiteHost != null && graphitePort != null) {
             String hostname = InetAddress.getLocalHost().getHostName();
             logger.info("Creating Graphite reporter pointed at " + graphiteHost + ":" + graphitePort + " with prefix " + hostname);
@@ -79,11 +79,11 @@ public class Loader {
             graphiteReporter.start(60, TimeUnit.SECONDS);
         }
 
-        int maxMetrics = Integer.parseInt(properties.getProperty("metricCatcher.maxMetrics", "500"));
+        int maxMetrics = Integer.parseInt(properties.getProperty("metriccatcher.maxMetrics", "500"));
         logger.info("Max metrics: " + maxMetrics);
         Map<String, Metric> lruMap = new LRUMap<String, Metric>(10, maxMetrics);
 
-        int port = Integer.parseInt(properties.getProperty("metricCatcher.udp.port", "1420"));
+        int port = Integer.parseInt(properties.getProperty("metriccatcher.udp.port", "1420"));
         logger.info("Listening on UDP port " + port);
         DatagramSocket socket = new DatagramSocket(port);
 
