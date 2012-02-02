@@ -27,6 +27,10 @@ Hale's [Metrics](http://github.com/codahale/metrics) provides in languages that
 aren't Java.  It is very useful for things like web applications that don't have
 any in-memory persistance (i.e. process-per-request).
 
+## Getting MetricCatcher
+
+Builds of MetricCatcher can be found on [Sonatype's OSS repository](https://oss.sonatype.org/content/repositories/releases/com/clearspring/metriccatcher/) or the [The Central Repository](http://search.maven.org/#search|ga|1|a%3A%22metriccatcher%22).
+
 # Talking to MetricCatcher
 
 MetricCatcher accepts JSON on UDP port 1420 by default.
