@@ -96,7 +96,7 @@ public class MetricCatcher extends Thread {
                     }
 
                     // Record the update
-                    logger.debug("Updating '" + jsonMetric.getName() + "' with <" + jsonMetric.getValue() + ">");
+                    logger.debug("Updating " + jsonMetric.getType() + " '" + jsonMetric.getName() + "' with <" + jsonMetric.getValue() + ">");
                     updateMetric(metricCache.get(jsonMetric.getName()), jsonMetric.getValue());
                 }
             } catch (IOException e) {
