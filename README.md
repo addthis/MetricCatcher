@@ -27,9 +27,9 @@ Hale's [Metrics](http://github.com/codahale/metrics) provides in languages that
 aren't Java.  It is very useful for things like web applications that don't have
 any in-memory persistance (i.e. process-per-request).
 
-## Getting MetricCatcher
+## Running MetricCatcher
 
-Builds of MetricCatcher can be found on [Sonatype's OSS repository](https://oss.sonatype.org/content/repositories/releases/com/clearspring/metriccatcher/) or the [The Central Repository](http://search.maven.org/#search|ga|1|a%3A%22metriccatcher%22).
+Builds of MetricCatcher can be found on [Sonatype's OSS repository](https://oss.sonatype.org/content/repositories/releases/com/clearspring/metriccatcher/) or the [The Central Repository](http://search.maven.org/#search|ga|1|a%3A%22metriccatcher%22).  Grab the latest [-dist.zip](http://search.maven.org/remotecontent?filepath=com/clearspring/metriccatcher/0.1.1/metriccatcher-0.1.1-dist.zip) and unpack it.  Uncomment the type of server you'd like MetricCatcher ot send metrics to in conf/config.properties and set the appropriate hostname.  Can start MetricCatcher using the included bin/start-metricCatcher.sh script and then check logs/metriccatcher.log to see if it had any issues starting up.  At the default DEBUG loglevel, MetricCatcher logs every time it gets a metric update, making debugging a cinch.
 
 # Talking to MetricCatcher
 
