@@ -39,6 +39,15 @@ public class Loader {
 
     private MetricCatcher metricCatcher;
 
+    // Configuration variables
+    private static final String METRICCATCHER_INTERVAL = "metriccatcher.interval";
+    private static final String METRICCATCHER_UDP_PORT = "metriccatcher.udp.port";
+    private static final String METRICCATCHER_MAX_METRICS = "metriccatcher.maxMetrics";
+    private static final String METRICCATCHER_GANGLIA_HOST = "metriccatcher.ganglia.host";
+    private static final String METRICCATCHER_GANGLIA_PORT = "metriccatcher.ganglia.port";
+    private static final String METRICCATCHER_GRAPHITE_HOST = "metriccatcher.graphite.host";
+    private static final String METRICCATCHER_GRAPHITE_PORT = "metriccatcher.graphite.port";
+
     /**
      * Load properties, build a MetricCatcher, start catching
      *
@@ -60,30 +69,40 @@ public class Loader {
             System.exit(1);
         }
 
+        int reportingInterval = 60;
+        String intervalProperty = properties.getProperty(METRICCATCHER_INTERVAL);
+        if (intervalProperty != null) {
+            try {
+                reportingInterval = Integer.parseInt(intervalProperty);
+            } catch (NumberFormatException e) {
+                logger.warn("Couldn't parse " + METRICCATCHER_INTERVAL + " setting", e);
+            }
+        }
+
         // Start a Ganglia reporter if specified in the config
-        String gangliaHost = properties.getProperty("metriccatcher.ganglia.host");
-        String gangliaPort = properties.getProperty("metriccatcher.ganglia.port");
+        String gangliaHost = properties.getProperty(METRICCATCHER_GANGLIA_HOST);
+        String gangliaPort = properties.getProperty(METRICCATCHER_GANGLIA_PORT);
         if (gangliaHost != null && gangliaPort != null) {
             logger.info("Creating Ganglia reporter pointed at " + gangliaHost + ":" + gangliaPort);
             GangliaReporter gangliaReporter = new GangliaReporter(gangliaHost, Integer.parseInt(gangliaPort));
-            gangliaReporter.start(60, TimeUnit.SECONDS);
+            gangliaReporter.start(reportingInterval, TimeUnit.SECONDS);
         }
 
         // Start a Graphite reporter if specified in the config
-        String graphiteHost = properties.getProperty("metriccatcher.graphite.host");
-        String graphitePort = properties.getProperty("metriccatcher.graphite.port");
+        String graphiteHost = properties.getProperty(METRICCATCHER_GRAPHITE_HOST);
+        String graphitePort = properties.getProperty(METRICCATCHER_GRAPHITE_PORT);
         if (graphiteHost != null && graphitePort != null) {
             String hostname = InetAddress.getLocalHost().getHostName();
             logger.info("Creating Graphite reporter pointed at " + graphiteHost + ":" + graphitePort + " with prefix " + hostname);
             GraphiteReporter graphiteReporter = new GraphiteReporter(graphiteHost, Integer.parseInt(graphitePort), hostname);
-            graphiteReporter.start(60, TimeUnit.SECONDS);
+            graphiteReporter.start(reportingInterval, TimeUnit.SECONDS);
         }
 
-        int maxMetrics = Integer.parseInt(properties.getProperty("metriccatcher.maxMetrics", "500"));
+        int maxMetrics = Integer.parseInt(properties.getProperty(METRICCATCHER_MAX_METRICS, "500"));
         logger.info("Max metrics: " + maxMetrics);
         Map<String, Metric> lruMap = new LRUMap<String, Metric>(10, maxMetrics);
 
-        int port = Integer.parseInt(properties.getProperty("metriccatcher.udp.port", "1420"));
+        int port = Integer.parseInt(properties.getProperty(METRICCATCHER_UDP_PORT, "1420"));
         logger.info("Listening on UDP port " + port);
         DatagramSocket socket = new DatagramSocket(port);
 
