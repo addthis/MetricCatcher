@@ -1,2 +1,10 @@
-0.5:
+0.1.2:
+    * Configurable reporting interval
+    * Downcase all configuration variables
+    * Don't ignore repeat messages
+
+0.0.9:
+    * Release via Sonatype
+
+0.0.5:
     * Initial release
