@@ -21,11 +21,11 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.yammer.metrics.core.CounterMetric;
-import com.yammer.metrics.core.GaugeMetric;
-import com.yammer.metrics.core.HistogramMetric;
-import com.yammer.metrics.core.MeterMetric;
-import com.yammer.metrics.core.TimerMetric;
+import com.yammer.metrics.core.Counter;
+import com.yammer.metrics.core.Gauge;
+import com.yammer.metrics.core.Histogram;
+import com.yammer.metrics.core.Meter;
+import com.yammer.metrics.core.Timer;
 
 public class JSONMetricTest {
     JSONMetric  jsonMetric;
@@ -54,36 +54,36 @@ public class JSONMetricTest {
     @Test
     public void testGetMetricClass_Gauge() {
         jsonMetric.setType("gauge");
-        assertEquals(GaugeMetric.class, jsonMetric.getMetricClass());
+        assertEquals(Gauge.class, jsonMetric.getMetricClass());
     }
 
     @Test
     public void testGetMetricClass_Counter() {
         jsonMetric.setType("counter");
-        assertEquals(CounterMetric.class, jsonMetric.getMetricClass());
+        assertEquals(Counter.class, jsonMetric.getMetricClass());
     }
 
     @Test
     public void testGetMetricClass_Meter() {
         jsonMetric.setType("meter");
-        assertEquals(MeterMetric.class, jsonMetric.getMetricClass());
+        assertEquals(Meter.class, jsonMetric.getMetricClass());
     }
 
     @Test
     public void testGetMetricClass_BiasedHistogram() {
         jsonMetric.setType("biased");
-        assertEquals(HistogramMetric.class, jsonMetric.getMetricClass());
+        assertEquals(Histogram.class, jsonMetric.getMetricClass());
     }
 
     @Test
     public void testGetMetricClass_UniformHistogram() {
         jsonMetric.setType("uniform");
-        assertEquals(HistogramMetric.class, jsonMetric.getMetricClass());
+        assertEquals(Histogram.class, jsonMetric.getMetricClass());
     }
 
     @Test
     public void testGetMetricClass_Timer() {
         jsonMetric.setType("timer");
-        assertEquals(TimerMetric.class, jsonMetric.getMetricClass());
+        assertEquals(Timer.class, jsonMetric.getMetricClass());
     }
 }
