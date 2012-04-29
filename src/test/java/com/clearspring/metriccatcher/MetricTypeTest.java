@@ -21,7 +21,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.yammer.metrics.core.HistogramMetric;
+import com.yammer.metrics.core.Histogram;
 
 public class MetricTypeTest {
     @Before
@@ -46,6 +46,6 @@ public class MetricTypeTest {
 
     @Test
     public void testKlass() {
-        assertEquals(HistogramMetric.class, MetricType.HISTOGRAM_BIASED.getKlass());
+        assertEquals(Histogram.class, MetricType.HISTOGRAM_BIASED.getKlass());
     }
 }

@@ -31,12 +31,12 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.yammer.metrics.Metrics;
-import com.yammer.metrics.core.CounterMetric;
-import com.yammer.metrics.core.HistogramMetric;
-import com.yammer.metrics.core.MeterMetric;
+import com.yammer.metrics.core.Counter;
+import com.yammer.metrics.core.Histogram;
+import com.yammer.metrics.core.Meter;
 import com.yammer.metrics.core.Metric;
 import com.yammer.metrics.core.MetricName;
-import com.yammer.metrics.core.TimerMetric;
+import com.yammer.metrics.core.Timer;
 
 public class MetricCatcherTest {
     MetricCatcher metricCatcher;
@@ -72,9 +72,9 @@ public class MetricCatcherTest {
     public void testCreateMetric() {
         Metric metric = metricCatcher.createMetric(jsonMetric);
 
-        assertEquals(MeterMetric.class, metric.getClass());
+        assertEquals(Meter.class, metric.getClass());
 
-        MeterMetric meterMetric = ((MeterMetric)metric);
+        Meter meterMetric = ((Meter)metric);
         // All metrics are in minutes :-( plz2fix
         assertEquals(TimeUnit.MINUTES, meterMetric.rateUnit());
     }
@@ -84,7 +84,7 @@ public class MetricCatcherTest {
         String name = "test" + Math.random();
         jsonMetric.setName(name);
         Metric metric = metricCatcher.createMetric(jsonMetric);
-        Map<MetricName, Metric> allMetrics = Metrics.allMetrics();
+        Map<MetricName, Metric> allMetrics = Metrics.defaultRegistry().allMetrics();
 
         MetricName metricName = new MetricName(name, "", "");
         assertTrue(allMetrics.containsKey(metricName));
@@ -95,7 +95,7 @@ public class MetricCatcherTest {
 
     @Test
     public void testUpdateMetric() {
-        MeterMetric metric = (MeterMetric)metricCatcher.createMetric(jsonMetric);
+        Meter metric = (Meter)metricCatcher.createMetric(jsonMetric);
 
         metricCatcher.updateMetric(metric, 1);
         assertEquals(1, metric.count());
@@ -103,7 +103,7 @@ public class MetricCatcherTest {
 
     @Test
     public void testUpdateMetric_MultipleUpdates() {
-        MeterMetric metric = (MeterMetric)metricCatcher.createMetric(jsonMetric);
+        Meter metric = (Meter)metricCatcher.createMetric(jsonMetric);
 
         int count = 7;
         for (int x = 0; x < 7; x++)
@@ -114,7 +114,7 @@ public class MetricCatcherTest {
 
     @Test
     public void testUpdateMetric_Meter_MarkWithZeroHasNoEffect() {
-        MeterMetric metric = (MeterMetric)metricCatcher.createMetric(jsonMetric);
+        Meter metric = (Meter)metricCatcher.createMetric(jsonMetric);
         metricCatcher.updateMetric(metric, 0);
         assertEquals(0, metric.count());
     }
@@ -122,7 +122,7 @@ public class MetricCatcherTest {
     @Test
     public void testUpdateMetric_Counter_Increment() {
         jsonMetric.setType("counter");
-        CounterMetric metric = (CounterMetric)metricCatcher.createMetric(jsonMetric);
+        Counter metric = (Counter)metricCatcher.createMetric(jsonMetric);
 
         metricCatcher.updateMetric(metric, 7);
         assertEquals(7, metric.count());
@@ -131,7 +131,7 @@ public class MetricCatcherTest {
     @Test
     public void testUpdateMetric_Counter_IncrementMultipleTimes() {
         jsonMetric.setType("counter");
-        CounterMetric metric = (CounterMetric)metricCatcher.createMetric(jsonMetric);
+        Counter metric = (Counter)metricCatcher.createMetric(jsonMetric);
 
         int count = 7;
         for (int x = 0; x < 7; x++)
@@ -143,7 +143,7 @@ public class MetricCatcherTest {
     @Test
     public void testUpdateMetric_Counter_Decrement() {
         jsonMetric.setType("counter");
-        CounterMetric metric = (CounterMetric)metricCatcher.createMetric(jsonMetric);
+        Counter metric = (Counter)metricCatcher.createMetric(jsonMetric);
 
         metricCatcher.updateMetric(metric, -7);
         assertEquals(-7, metric.count());
@@ -152,7 +152,7 @@ public class MetricCatcherTest {
     @Test
     public void testUpdateMetric_Counter_Clear() {
         jsonMetric.setType("counter");
-        CounterMetric metric = (CounterMetric)metricCatcher.createMetric(jsonMetric);
+        Counter metric = (Counter)metricCatcher.createMetric(jsonMetric);
 
         metricCatcher.updateMetric(metric, 1);
         assertEquals(1, metric.count());
@@ -164,7 +164,7 @@ public class MetricCatcherTest {
     @Test
     public void testUpdateMetric_Histogram_Biased() {
         jsonMetric.setType("biased");
-        HistogramMetric metric = (HistogramMetric)metricCatcher.createMetric(jsonMetric);
+        Histogram metric = (Histogram)metricCatcher.createMetric(jsonMetric);
 
         metricCatcher.updateMetric(metric, 1);
         assertEquals(1, metric.count());
@@ -173,7 +173,7 @@ public class MetricCatcherTest {
     @Test
     public void testUpdateMetric_Histogram_MultipleUpdates() {
         jsonMetric.setType("biased");
-        HistogramMetric metric = (HistogramMetric)metricCatcher.createMetric(jsonMetric);
+        Histogram metric = (Histogram)metricCatcher.createMetric(jsonMetric);
 
         int count = 7;
         for (int x = 0; x < 7; x++)
@@ -258,9 +258,9 @@ public class MetricCatcherTest {
         Thread.sleep(500);
         metricCatcher.shutdown();
 
-        double minval = ((TimerMetric)metricCache.get(metricName)).min();
+        double minval = ((Timer)metricCache.get(metricName)).min();
         assertEquals(minValue, minval, 1);
-        assertEquals(maxValue, ((TimerMetric)metricCache.get(metricName)).max(), 1);
+        assertEquals(maxValue, ((Timer)metricCache.get(metricName)).max(), 1);
     }
 
     @Test
@@ -291,7 +291,7 @@ public class MetricCatcherTest {
         Thread.sleep(500);
         metricCatcher.shutdown();
 
-        assertEquals(2, ((CounterMetric)metricCache.get(metricName)).count());
+        assertEquals(2, ((Counter)metricCache.get(metricName)).count());
     }
 
     @Test
@@ -324,9 +324,9 @@ public class MetricCatcherTest {
         Thread.sleep(500);
         metricCatcher.shutdown();
 
-        assertEquals(2, ((HistogramMetric)metricCache.get(metricName)).count());
-        assertEquals(minVal, ((HistogramMetric)metricCache.get(metricName)).min(), 0);
-        assertEquals(maxVal, ((HistogramMetric)metricCache.get(metricName)).max(), 0);
+        assertEquals(2, ((Histogram)metricCache.get(metricName)).count());
+        assertEquals(minVal, ((Histogram)metricCache.get(metricName)).min(), 0);
+        assertEquals(maxVal, ((Histogram)metricCache.get(metricName)).max(), 0);
     }
 
     @Test
@@ -349,7 +349,7 @@ public class MetricCatcherTest {
         Thread.sleep(500);
         metricCatcher.shutdown();
 
-        assertEquals(1, ((CounterMetric)metricCache.get(metricName)).count());
-        assertEquals(7, ((MeterMetric)metricCache.get(secondMetricName)).count());
+        assertEquals(1, ((Counter)metricCache.get(metricName)).count());
+        assertEquals(7, ((Meter)metricCache.get(secondMetricName)).count());
     }
 }

@@ -15,9 +15,9 @@
  */
 package com.clearspring.metriccatcher;
 
-import com.yammer.metrics.core.GaugeMetric;
+import com.yammer.metrics.core.Gauge;
 
-public class GaugeMetricImpl extends GaugeMetric<Long> {
+public class GaugeMetricImpl extends Gauge<Long> {
     long value;
 
     public GaugeMetricImpl() {

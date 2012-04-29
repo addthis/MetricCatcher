@@ -15,19 +15,19 @@
  */
 package com.clearspring.metriccatcher;
 
-import com.yammer.metrics.core.CounterMetric;
-import com.yammer.metrics.core.GaugeMetric;
-import com.yammer.metrics.core.HistogramMetric;
-import com.yammer.metrics.core.MeterMetric;
-import com.yammer.metrics.core.TimerMetric;
+import com.yammer.metrics.core.Counter;
+import com.yammer.metrics.core.Gauge;
+import com.yammer.metrics.core.Histogram;
+import com.yammer.metrics.core.Meter;
+import com.yammer.metrics.core.Timer;
 
 public enum MetricType {
-    GAUGE ("gauge", GaugeMetric.class),
-    COUNTER ("counter", CounterMetric.class),
-    METER ("meter", MeterMetric.class),
-    HISTOGRAM_BIASED ("biased", HistogramMetric.class),
-    HISTOGRAM_UNIFORM ("uniform", HistogramMetric.class),
-    TIMER ("timer", TimerMetric.class);
+    GAUGE ("gauge", Gauge.class),
+    COUNTER ("counter", Counter.class),
+    METER ("meter", Meter.class),
+    HISTOGRAM_BIASED ("biased", Histogram.class),
+    HISTOGRAM_UNIFORM ("uniform", Histogram.class),
+    TIMER ("timer", Timer.class);
 
     private String name;
     private Class<?> klass;
