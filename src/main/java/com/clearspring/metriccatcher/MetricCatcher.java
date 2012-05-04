@@ -32,13 +32,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.yammer.metrics.Metrics;
-import com.yammer.metrics.core.CounterMetric;
-import com.yammer.metrics.core.GaugeMetric;
-import com.yammer.metrics.core.HistogramMetric;
-import com.yammer.metrics.core.MeterMetric;
+import com.yammer.metrics.core.Counter;
+import com.yammer.metrics.core.Gauge;
+import com.yammer.metrics.core.Histogram;
+import com.yammer.metrics.core.Meter;
 import com.yammer.metrics.core.Metric;
 import com.yammer.metrics.core.MetricName;
-import com.yammer.metrics.core.TimerMetric;
+import com.yammer.metrics.core.Timer;
 
 public class MetricCatcher extends Thread {
     private static final Logger logger = LoggerFactory.getLogger(MetricCatcher.class);
@@ -125,19 +125,19 @@ public class MetricCatcher extends Thread {
             metricName = new MetricName(jsonMetric.getName(), "", "");
 
         Class<?> metricType = jsonMetric.getMetricClass();
-        if (metricType == GaugeMetric.class) {
+        if (metricType == Gauge.class) {
             return Metrics.newGauge(metricName, new GaugeMetricImpl());
-        } else if (metricType == CounterMetric.class) {
+        } else if (metricType == Counter.class) {
             return Metrics.newCounter(metricName);
-        } else if (metricType == MeterMetric.class) {
+        } else if (metricType == Meter.class) {
             // TODO timeunit
             return Metrics.newMeter(metricName, jsonMetric.getName(), TimeUnit.MINUTES);
-        } else if (metricType == HistogramMetric.class) {
+        } else if (metricType == Histogram.class) {
             if (jsonMetric.getType().equals("biased"))
                 return Metrics.newHistogram(metricName, true);
             else
                 return Metrics.newHistogram(metricName, false);
-        } else if (metricType == TimerMetric.class) {
+        } else if (metricType == Timer.class) {
             return Metrics.newTimer(metricName, TimeUnit.MICROSECONDS, TimeUnit.SECONDS);
         }
 
@@ -166,22 +166,22 @@ public class MetricCatcher extends Thread {
      * @param value The value to supply when updating the metric
      */
     protected void updateMetric(Metric metric, double value) {
-        if (metric.getClass() == GaugeMetric.class) {
+        if (metric.getClass() == Gauge.class) {
                 ((GaugeMetricImpl)metric).setValue((long)value);
-        } else if (metric.getClass() == CounterMetric.class) {
+        } else if (metric.getClass() == Counter.class) {
             if (value > 0)
-                ((CounterMetric)metric).inc((long)value);
+                ((Counter)metric).inc((long)value);
             else if (value < 0)
-                ((CounterMetric)metric).dec((long)value * -1);
+                ((Counter)metric).dec((long)value * -1);
             else
-                ((CounterMetric)metric).clear();
-        } else if (metric.getClass() == MeterMetric.class) {
-            ((MeterMetric)metric).mark((long)value);
-        } else if (metric.getClass() == HistogramMetric.class) {
+                ((Counter)metric).clear();
+        } else if (metric.getClass() == Meter.class) {
+            ((Meter)metric).mark((long)value);
+        } else if (metric.getClass() == Histogram.class) {
             // TODO clearing?  How about no, so that we can record 0 values; it'll clear over time...
-            ((HistogramMetric)metric).update((long)value);
-        } else if (metric.getClass() == TimerMetric.class) {
-            ((TimerMetric)metric).update((long)value, TimeUnit.MICROSECONDS);
+            ((Histogram)metric).update((long)value);
+        } else if (metric.getClass() == Timer.class) {
+            ((Timer)metric).update((long)value, TimeUnit.MICROSECONDS);
         }
     }
 
