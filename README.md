@@ -69,7 +69,7 @@ MetricCatcher expects a list of individual metrics as described above.
 ## Author
 
 MetricCatcher was written by [Drew Stephens](http://dinomite.net)
-<drew@clearspring.com> of [Clearspring](http://clearspring.com).
+<drew@dinomite.net> of [Clearspring](http://clearspring.com).
 
 ## License
 
