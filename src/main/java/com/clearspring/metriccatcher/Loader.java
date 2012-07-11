@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.PropertyConfigurator;
 import org.codehaus.jackson.map.util.LRUMap;
 import org.slf4j.Logger;
@@ -47,6 +48,7 @@ public class Loader {
     private static final String METRICCATCHER_GANGLIA_PORT = "metriccatcher.ganglia.port";
     private static final String METRICCATCHER_GRAPHITE_HOST = "metriccatcher.graphite.host";
     private static final String METRICCATCHER_GRAPHITE_PORT = "metriccatcher.graphite.port";
+    private static final String METRICCATCHER_GRAPHITE_PREFIX = "metriccatcher.graphite.prefix";
 
     /**
      * Load properties, build a MetricCatcher, start catching
@@ -92,9 +94,12 @@ public class Loader {
         String graphiteHost = properties.getProperty(METRICCATCHER_GRAPHITE_HOST);
         String graphitePort = properties.getProperty(METRICCATCHER_GRAPHITE_PORT);
         if (graphiteHost != null && graphitePort != null) {
-            String hostname = InetAddress.getLocalHost().getHostName();
-            logger.info("Creating Graphite reporter pointed at " + graphiteHost + ":" + graphitePort + " with prefix " + hostname);
-            GraphiteReporter graphiteReporter = new GraphiteReporter(graphiteHost, Integer.parseInt(graphitePort), hostname);
+            String graphitePrefix = properties.getProperty(METRICCATCHER_GRAPHITE_PREFIX);
+            if (graphitePrefix == null) {
+                graphitePrefix = InetAddress.getLocalHost().getHostName();
+            }
+            logger.info("Creating Graphite reporter pointed at " + graphiteHost + ":" + graphitePort + " with prefix '" + graphitePrefix + "'");
+            GraphiteReporter graphiteReporter = new GraphiteReporter(graphiteHost, Integer.parseInt(graphitePort), StringUtils.trimToNull(graphitePrefix));
             graphiteReporter.start(reportingInterval, TimeUnit.SECONDS);
         }
 
