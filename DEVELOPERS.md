@@ -4,6 +4,7 @@ Note: releases are GPG signed, so you need to have GPG setup
 
 Add the following to your .m2/settings.xml
 
+``` xml
     <servers>
         <server>
             <id>sonatype-nexus-snapshots</id>
@@ -16,10 +17,13 @@ Add the following to your .m2/settings.xml
             <password>SONATYPE_PASSWORD</password>
         </server>
     </servers>
+```
 
-mvn release:clean
-mvn release:prepare
-mvn release:perform
+``` sh
+    mvn release:clean
+    mvn release:prepare
+    mvn release:perform
+```
 
 Login to the Sonatype OSS Nexus (https://oss.sonatype.org) to close & release the staged artifacts:
     Select a Staging Repositories from Build Promotion on the left
