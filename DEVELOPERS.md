@@ -5,24 +5,24 @@ Note: releases are GPG signed, so you need to have GPG setup
 Add the following to your .m2/settings.xml
 
 ``` xml
-    <servers>
-        <server>
-            <id>sonatype-nexus-snapshots</id>
-            <username>SONATYPE_USERNAME</username>
-            <password>SONATYPE_PASSWORD</password>
-        </server>
-        <server>
-            <id>sonatype-nexus-staging</id>
-            <username>SONATYPE_USERNAME</username>
-            <password>SONATYPE_PASSWORD</password>
-        </server>
-    </servers>
+<servers>
+    <server>
+        <id>sonatype-nexus-snapshots</id>
+        <username>SONATYPE_USERNAME</username>
+        <password>SONATYPE_PASSWORD</password>
+    </server>
+    <server>
+        <id>sonatype-nexus-staging</id>
+        <username>SONATYPE_USERNAME</username>
+        <password>SONATYPE_PASSWORD</password>
+    </server>
+</servers>
 ```
 
 ``` sh
-    mvn release:clean
-    mvn release:prepare
-    mvn release:perform
+mvn release:clean
+mvn release:prepare
+mvn release:perform
 ```
 
 Login to the Sonatype OSS Nexus (https://oss.sonatype.org) to close & release the staged artifacts:
