@@ -1,8 +1,9 @@
+.idea
 .*.sw*
 .classpath
 .project
 .settings/
 target/
-thetan-metricCatcher.iml
-thetan-metricCatcher.ipr
-thetan-metricCatcher.iws
+metricCatcher.iml
+metricCatcher.ipr
+metricCatcher.iws
