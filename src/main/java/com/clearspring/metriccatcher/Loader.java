@@ -24,6 +24,8 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.PropertyConfigurator;
 import org.codehaus.jackson.map.util.LRUMap;
 import org.slf4j.Logger;
@@ -47,6 +49,8 @@ public class Loader {
     private static final String METRICCATCHER_GANGLIA_PORT = "metriccatcher.ganglia.port";
     private static final String METRICCATCHER_GRAPHITE_HOST = "metriccatcher.graphite.host";
     private static final String METRICCATCHER_GRAPHITE_PORT = "metriccatcher.graphite.port";
+    private static final String METRICCATCHER_GRAPHITE_PREFIX = "metriccatcher.graphite.prefix";
+    private static final String METRICCATCHER_DISABLE_JVM_METRICS = "metriccatcher.disableJvmMetrics";
 
     /**
      * Load properties, build a MetricCatcher, start catching
@@ -78,6 +82,15 @@ public class Loader {
                 logger.warn("Couldn't parse " + METRICCATCHER_INTERVAL + " setting", e);
             }
         }
+        
+        boolean disableJvmMetrics = false;
+        String disableJvmProperty = properties.getProperty(METRICCATCHER_DISABLE_JVM_METRICS);
+        if (disableJvmProperty != null) {
+            disableJvmMetrics = BooleanUtils.toBoolean(disableJvmProperty);
+            if (disableJvmMetrics) {
+                logger.info("Disabling JVM metric reporting");
+            }
+        }
 
         // Start a Ganglia reporter if specified in the config
         String gangliaHost = properties.getProperty(METRICCATCHER_GANGLIA_HOST);
@@ -85,6 +98,7 @@ public class Loader {
         if (gangliaHost != null && gangliaPort != null) {
             logger.info("Creating Ganglia reporter pointed at " + gangliaHost + ":" + gangliaPort);
             GangliaReporter gangliaReporter = new GangliaReporter(gangliaHost, Integer.parseInt(gangliaPort));
+            gangliaReporter.printVMMetrics = !disableJvmMetrics;
             gangliaReporter.start(reportingInterval, TimeUnit.SECONDS);
         }
 
@@ -92,9 +106,13 @@ public class Loader {
         String graphiteHost = properties.getProperty(METRICCATCHER_GRAPHITE_HOST);
         String graphitePort = properties.getProperty(METRICCATCHER_GRAPHITE_PORT);
         if (graphiteHost != null && graphitePort != null) {
-            String hostname = InetAddress.getLocalHost().getHostName();
-            logger.info("Creating Graphite reporter pointed at " + graphiteHost + ":" + graphitePort + " with prefix " + hostname);
-            GraphiteReporter graphiteReporter = new GraphiteReporter(graphiteHost, Integer.parseInt(graphitePort), hostname);
+            String graphitePrefix = properties.getProperty(METRICCATCHER_GRAPHITE_PREFIX);
+            if (graphitePrefix == null) {
+                graphitePrefix = InetAddress.getLocalHost().getHostName();
+            }
+            logger.info("Creating Graphite reporter pointed at " + graphiteHost + ":" + graphitePort + " with prefix '" + graphitePrefix + "'");
+            GraphiteReporter graphiteReporter = new GraphiteReporter(graphiteHost, Integer.parseInt(graphitePort), StringUtils.trimToNull(graphitePrefix));
+            graphiteReporter.printVMMetrics = !disableJvmMetrics;
             graphiteReporter.start(reportingInterval, TimeUnit.SECONDS);
         }
 
