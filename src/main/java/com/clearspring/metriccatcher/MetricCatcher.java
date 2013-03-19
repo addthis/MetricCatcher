@@ -145,6 +145,8 @@ public class MetricCatcher extends Thread {
         return null;
     }
 
+    //test
+
     /**
      * Update various metric types.
      *
