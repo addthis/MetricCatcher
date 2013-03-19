@@ -166,21 +166,21 @@ public class MetricCatcher extends Thread {
      * @param value The value to supply when updating the metric
      */
     protected void updateMetric(Metric metric, double value) {
-        if (metric.getClass() == Gauge.class) {
+        if (metric instanceof Gauge) {
                 ((GaugeMetricImpl)metric).setValue((long)value);
-        } else if (metric.getClass() == Counter.class) {
+        } else if (metric instanceof Counter) {
             if (value > 0)
                 ((Counter)metric).inc((long)value);
             else if (value < 0)
                 ((Counter)metric).dec((long)value * -1);
             else
                 ((Counter)metric).clear();
-        } else if (metric.getClass() == Meter.class) {
+        } else if (metric instanceof Meter) {
             ((Meter)metric).mark((long)value);
-        } else if (metric.getClass() == Histogram.class) {
+        } else if (metric instanceof Histogram) {
             // TODO clearing?  How about no, so that we can record 0 values; it'll clear over time...
             ((Histogram)metric).update((long)value);
-        } else if (metric.getClass() == Timer.class) {
+        } else if (metric instanceof Timer) {
             ((Timer)metric).update((long)value, TimeUnit.MICROSECONDS);
         }
     }
