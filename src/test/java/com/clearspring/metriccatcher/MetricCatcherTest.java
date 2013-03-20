@@ -102,8 +102,24 @@ public class MetricCatcherTest {
         gaugeJsonMetric.setTimestamp((int)System.currentTimeMillis() / 1000);
 
         Gauge gauge = (Gauge)metricCatcher.createMetric(gaugeJsonMetric);
-        metricCatcher.updateMetric(gauge,100);
-        assertEquals(new Long(100),gauge.value());
+        metricCatcher.updateMetric(gauge, 100);
+        assertEquals((long)100, gauge.value());
+        metricCatcher.updateMetric(gauge, 7);
+        assertEquals((long)7, gauge.value());
+    }
+
+    @Test
+    public void testUpdateMetric_IncrementsCounter() {
+        JSONMetric counterJsonMetric = new JSONMetric();
+        counterJsonMetric.setType("counter");
+        counterJsonMetric.setName("foo.bar.baz.countermetric" + Math.random());
+        counterJsonMetric.setTimestamp((int) System.currentTimeMillis() / 1000);
+
+        Counter counter = (Counter)metricCatcher.createMetric(counterJsonMetric);
+        metricCatcher.updateMetric(counter, 2);
+        assertEquals((long)2, counter.count());
+        metricCatcher.updateMetric(counter, 2);
+        assertEquals((long)4, counter.count());
     }
 
     @Test
