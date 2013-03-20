@@ -25,22 +25,18 @@ import java.net.InetAddress;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import com.yammer.metrics.core.*;
 import org.codehaus.jackson.map.util.LRUMap;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import com.yammer.metrics.Metrics;
-import com.yammer.metrics.core.Counter;
-import com.yammer.metrics.core.Histogram;
-import com.yammer.metrics.core.Meter;
-import com.yammer.metrics.core.Metric;
-import com.yammer.metrics.core.MetricName;
-import com.yammer.metrics.core.Timer;
 
 public class MetricCatcherTest {
     MetricCatcher metricCatcher;
     JSONMetric jsonMetric;
+    JSONMetric gaugeJsonMetric;
     String metricName;
     DatagramSocket sendingSocket;
     DatagramSocket listeningSocket;
@@ -59,6 +55,12 @@ public class MetricCatcherTest {
         metricName = "foo.bar.baz.metric" + Math.random();
         jsonMetric.setName(metricName);
         jsonMetric.setTimestamp(((int)System.currentTimeMillis() / 1000));
+
+
+        gaugeJsonMetric = new JSONMetric();
+        gaugeJsonMetric.setType("gauge");
+        gaugeJsonMetric.setName("foo.bar.baz.gaugemetric" + Math.random());
+        gaugeJsonMetric.setTimestamp((int)System.currentTimeMillis() / 1000);
 
         sendingSocket = new DatagramSocket();
         localhost = InetAddress.getByName("127.0.0.1");
@@ -95,10 +97,15 @@ public class MetricCatcherTest {
 
     @Test
     public void testUpdateMetric() {
-        Meter metric = (Meter)metricCatcher.createMetric(jsonMetric);
 
+        Meter metric = (Meter)metricCatcher.createMetric(jsonMetric);
         metricCatcher.updateMetric(metric, 1);
         assertEquals(1, metric.count());
+
+        Gauge gauge = (Gauge)metricCatcher.createMetric(gaugeJsonMetric);
+        metricCatcher.updateMetric(gauge,100);
+        assertEquals(new Long(100),gauge.value());
+
     }
 
     @Test

@@ -184,6 +184,8 @@ public class MetricCatcher extends Thread {
             ((Histogram)metric).update((long)value);
         } else if (metric instanceof Timer) {
             ((Timer)metric).update((long)value, TimeUnit.MICROSECONDS);
+        } else {
+            logger.debug("didn't find a class to map to");
         }
     }
 
