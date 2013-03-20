@@ -69,7 +69,7 @@ MetricCatcher expects a list of individual metrics as described above.
 ## Author
 
 MetricCatcher was written by [Drew Stephens](http://dinomite.net)
-<drew@dinomite.net> of [Clearspring](http://clearspring.com).
+`<drew@dinomite.net>` of [Clearspring](http://clearspring.com).
 
 ## License
 
@@ -84,7 +84,7 @@ MetricCatcher: http://github.com/clearspring/MetricCatcher
 
 ## Jobs
 
-When this was written, Clearpsirng was hiring; even if the blame on this line is
+When this was written, Clearspring was hiring; even if the blame on this line is
 from long ago, we probably still are.  Check out http://clearspring.com/jobs if
 you're intersted in doing webapps, working with Big Data, and like smart, fun
 coworkers.  Clearspring is based just outside of Washington, DC (Tysons Corner)
