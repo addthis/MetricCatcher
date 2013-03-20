@@ -36,7 +36,6 @@ import com.yammer.metrics.Metrics;
 public class MetricCatcherTest {
     MetricCatcher metricCatcher;
     JSONMetric jsonMetric;
-    JSONMetric gaugeJsonMetric;
     String metricName;
     DatagramSocket sendingSocket;
     DatagramSocket listeningSocket;
@@ -51,16 +50,9 @@ public class MetricCatcherTest {
 
         jsonMetric = new JSONMetric();
         jsonMetric.setType("meter");
-        // The Metrics class caches created metrics; we want fresh ones
         metricName = "foo.bar.baz.metric" + Math.random();
         jsonMetric.setName(metricName);
-        jsonMetric.setTimestamp(((int)System.currentTimeMillis() / 1000));
-
-
-        gaugeJsonMetric = new JSONMetric();
-        gaugeJsonMetric.setType("gauge");
-        gaugeJsonMetric.setName("foo.bar.baz.gaugemetric" + Math.random());
-        gaugeJsonMetric.setTimestamp((int)System.currentTimeMillis() / 1000);
+        jsonMetric.setTimestamp(((int) System.currentTimeMillis() / 1000));
 
         sendingSocket = new DatagramSocket();
         localhost = InetAddress.getByName("127.0.0.1");
@@ -97,15 +89,21 @@ public class MetricCatcherTest {
 
     @Test
     public void testUpdateMetric() {
-
         Meter metric = (Meter)metricCatcher.createMetric(jsonMetric);
         metricCatcher.updateMetric(metric, 1);
         assertEquals(1, metric.count());
+    }
+
+    @Test
+    public void testUpdateMetric_UpdatesGauge() {
+        JSONMetric gaugeJsonMetric = new JSONMetric();
+        gaugeJsonMetric.setType("gauge");
+        gaugeJsonMetric.setName("foo.bar.baz.gaugemetric" + Math.random());
+        gaugeJsonMetric.setTimestamp((int)System.currentTimeMillis() / 1000);
 
         Gauge gauge = (Gauge)metricCatcher.createMetric(gaugeJsonMetric);
         metricCatcher.updateMetric(gauge,100);
         assertEquals(new Long(100),gauge.value());
-
     }
 
     @Test
