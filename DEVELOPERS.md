@@ -39,9 +39,12 @@ to Sonatype's repostiory.  Now you need to go tell Sonatype to publish the
 staged artifacts.
 
 Login to the Sonatype OSS Nexus (https://oss.sonatype.org):
-    Select a Staging Repositories from Build Promotion on the left
-    Select the repository from the main window and click "Close" in the toolbar
-    Once succesfully closed, select the repository again and click "Release"
+- Select a Staging Repositories from Build Promotion on the left
+- Sort the main window by Created On
+- Select the repository that you just pushed, which should be near the top
+    (named something like comclearspring-...)
+- Click "Close" in the toolbar above the grid
+- Once succesfully closed, select the repository again and click "Release"
 
 The newly released artifacts can be found at
 https://oss.sonatype.org/content/repositories/releases/com/clearspring/metriccatcher/
