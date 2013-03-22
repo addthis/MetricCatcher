@@ -109,6 +109,8 @@
                 <artifactId>maven-release-plugin</artifactId>
                 <version>2.4</version>
                 <configuration>
+                    <!-- Manually push changes when all is well -->
+                    <pushChanges>false</pushChanges>
                     <allowTimestampedSnapshots>true</allowTimestampedSnapshots>
                     <!-- Make signing prompt for passphrase properly http://jira.codehaus.org/browse/MGPG-9 -->
                     <mavenExecutorId>forked-path</mavenExecutorId>
