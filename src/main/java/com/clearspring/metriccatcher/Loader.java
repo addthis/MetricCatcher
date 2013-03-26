@@ -31,6 +31,8 @@ import org.codehaus.jackson.map.util.LRUMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.addthis.metrics.reporter.config.ReporterConfig;
+
 import com.yammer.metrics.core.Metric;
 import com.yammer.metrics.reporting.GangliaReporter;
 import com.yammer.metrics.reporting.GraphiteReporter;
@@ -50,6 +52,7 @@ public class Loader {
     private static final String METRICCATCHER_GRAPHITE_HOST = "metriccatcher.graphite.host";
     private static final String METRICCATCHER_GRAPHITE_PORT = "metriccatcher.graphite.port";
     private static final String METRICCATCHER_GRAPHITE_PREFIX = "metriccatcher.graphite.prefix";
+    private static final String METRICCATCHER_REPORTER_CONFIG = "metriccatcher.reporterConfig";
     private static final String METRICCATCHER_DISABLE_JVM_METRICS = "metriccatcher.disableJvmMetrics";
 
     /**
@@ -82,7 +85,7 @@ public class Loader {
                 logger.warn("Couldn't parse " + METRICCATCHER_INTERVAL + " setting", e);
             }
         }
-        
+
         boolean disableJvmMetrics = false;
         String disableJvmProperty = properties.getProperty(METRICCATCHER_DISABLE_JVM_METRICS);
         if (disableJvmProperty != null) {
@@ -92,6 +95,7 @@ public class Loader {
             }
         }
 
+        boolean reportingEnabled = false;
         // Start a Ganglia reporter if specified in the config
         String gangliaHost = properties.getProperty(METRICCATCHER_GANGLIA_HOST);
         String gangliaPort = properties.getProperty(METRICCATCHER_GANGLIA_PORT);
@@ -100,6 +104,7 @@ public class Loader {
             GangliaReporter gangliaReporter = new GangliaReporter(gangliaHost, Integer.parseInt(gangliaPort));
             gangliaReporter.printVMMetrics = !disableJvmMetrics;
             gangliaReporter.start(reportingInterval, TimeUnit.SECONDS);
+            reportingEnabled = true;
         }
 
         // Start a Graphite reporter if specified in the config
@@ -114,6 +119,24 @@ public class Loader {
             GraphiteReporter graphiteReporter = new GraphiteReporter(graphiteHost, Integer.parseInt(graphitePort), StringUtils.trimToNull(graphitePrefix));
             graphiteReporter.printVMMetrics = !disableJvmMetrics;
             graphiteReporter.start(reportingInterval, TimeUnit.SECONDS);
+            reportingEnabled = true;
+        }
+
+        String reporterConfigFile = properties.getProperty(METRICCATCHER_REPORTER_CONFIG);
+        if (reporterConfigFile != null) {
+            logger.info("Trying to load reporterConfig from file: {}", reporterConfigFile);
+            try {
+                ReporterConfig.loadFromFileAndValidate(reporterConfigFile).enableAll();
+            }
+            catch (Exception e) {
+                logger.error("Failed to load metrics-reporter-config, metric sinks will not be activated", e);
+            }
+            reportingEnabled = true;
+        }
+
+        if (!reportingEnabled) {
+            logger.error("No reporters enabled.  MetricCatcher can not do it's job");
+            throw new RuntimeException("No reporters enabled");
         }
 
         int maxMetrics = Integer.parseInt(properties.getProperty(METRICCATCHER_MAX_METRICS, "500"));
