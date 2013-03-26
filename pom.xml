@@ -15,13 +15,6 @@
         </license>
     </licenses>
 
-    <repositories>
-        <repository>
-            <id>repo.codahale.com</id>
-            <url>http://repo.codahale.com</url>
-        </repository>
-    </repositories>
-
     <properties>
         <slf4j.version>1.6.6</slf4j.version>
         <metrics.version>2.2.0</metrics.version>
