@@ -24,7 +24,7 @@
 
     <properties>
         <slf4j.version>1.6.6</slf4j.version>
-        <metrics.version>2.1.2</metrics.version>
+        <metrics.version>2.2.0</metrics.version>
     </properties>
 
     <dependencies>
