@@ -1,3 +1,7 @@
+0.2:
+    * Support for metrics-reporter-config
+        (https://github.com/addthis/metrics-reporter-config)
+
 0.1.4:
     * Fix bug that was leaving metrics with default value
 
