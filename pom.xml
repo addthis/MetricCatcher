@@ -4,7 +4,7 @@
     <groupId>com.clearspring</groupId>
     <artifactId>metriccatcher</artifactId>
     <name>metriccatcher</name>
-    <version>0.2.0-SNAPSHOT</version>
+    <version>0.2.0</version>
     <description>Receives metrics on UDP, sends them to Ganglia or Graphite</description>
     <url>https://github.com/clearspring/MetricCatcher</url>
 
@@ -98,7 +98,7 @@
         <connection>scm:git:git://github.com/clearspring/MetricCatcher.git</connection>
         <developerConnection>scm:git:git://github.com/clearspring/MetricCatcher.git</developerConnection>
         <url>https://github.com/clearspring/MetricCatcher</url>
-      <tag>HEAD</tag>
+      <tag>metriccatcher-0.2.0</tag>
   </scm>
 
     <build>
