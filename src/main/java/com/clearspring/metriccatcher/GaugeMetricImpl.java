@@ -18,7 +18,7 @@ package com.clearspring.metriccatcher;
 import com.yammer.metrics.core.Gauge;
 
 public class GaugeMetricImpl extends Gauge<Long> {
-    long value;
+    volatile long value;
 
     public GaugeMetricImpl() {
         value = 0;
