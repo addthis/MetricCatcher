@@ -1,12 +1,17 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    <parent>
+      <groupId>com.addthis.common.build.maven.pom</groupId>
+      <artifactId>jar-pom</artifactId>
+      <version>3.1.0</version>
+    </parent>
 
     <groupId>com.clearspring</groupId>
     <artifactId>metriccatcher</artifactId>
     <name>metriccatcher</name>
     <version>0.2.0-SNAPSHOT</version>
     <description>Receives metrics on UDP, sends them to Ganglia or Graphite</description>
-    <url>https://github.com/clearspring/MetricCatcher</url>
+    <url>https://github.com/addthis/MetricCatcher</url>
 
     <licenses>
         <license>
@@ -73,114 +78,11 @@
         </dependency>
     </dependencies>
 
-    <developers>
-        <developer>
-            <name>Drew Stephens</name>
-            <email>drew@clearspring.com</email>
-            <url>http://www.clearspring.com</url>
-            <organization>Clearspring Technologies</organization>
-            <organizationUrl>http://www.clearspring.com</organizationUrl>
-        </developer>
-    </developers>
-
-    <distributionManagement>
-        <repository>
-            <id>sonatype-nexus-staging</id>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-        </repository>
-        <snapshotRepository>
-            <id>sonatype-nexus-snapshots</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-        </snapshotRepository>
-    </distributionManagement>
-
     <scm>
-        <connection>scm:git:git://github.com/clearspring/MetricCatcher.git</connection>
-        <developerConnection>scm:git:git://github.com/clearspring/MetricCatcher.git</developerConnection>
-        <url>https://github.com/clearspring/MetricCatcher</url>
-      <tag>HEAD</tag>
-  </scm>
+        <connection>scm:git:git@github.com:addthis/MetricCatcher.git</connection>
+        <developerConnection>scm:git:git@github.com:addthis/MetricCatcher.git</developerConnection>
+        <url>https://github.com/addthis/MetricCatcher</url>
+        <tag>HEAD</tag>
+    </scm>
 
-    <build>
-        <plugins>
-            <plugin>
-                <artifactId>maven-release-plugin</artifactId>
-                <version>2.4</version>
-                <configuration>
-                    <!-- Manually push changes when all is well -->
-                    <pushChanges>false</pushChanges>
-                    <allowTimestampedSnapshots>true</allowTimestampedSnapshots>
-                    <!-- Make signing prompt for passphrase properly http://jira.codehaus.org/browse/MGPG-9 -->
-                    <mavenExecutorId>forked-path</mavenExecutorId>
-                </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.3.2</version>
-                <inherited>true</inherited>
-                <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
-                </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-gpg-plugin</artifactId>
-                <version>1.4</version>
-                <executions>
-                    <execution>
-                        <id>sign-artifacts</id>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>sign</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <!--
-                set up maven assembly plugin to build combined output jar that gets
-                bundled into dist zip from:
-                http://stackoverflow.com/questions/1522778/maven-assembly-plugin-how-to-create-nested-assemblies
-            -->
-            <plugin>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <version>2.2-beta-5</version>
-                <executions>
-                    <execution>
-                        <id>jar-with-dependencies</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>single</goal>
-                        </goals>
-                        <configuration>
-                            <descriptorRefs>
-                                <descriptorRef>jar-with-dependencies</descriptorRef>
-                            </descriptorRefs>
-                            <archive>
-                                <manifest>
-                                    <mainClass>com.clearspring.metriccatcher.Loader</mainClass>
-                                </manifest>
-                            </archive>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>dist</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>single</goal>
-                        </goals>
-                        <configuration>
-                            <descriptors>
-                                <descriptor>src/main/assembly/dist.xml</descriptor>
-                            </descriptors>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
 </project>
