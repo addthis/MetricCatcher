@@ -78,6 +78,51 @@
         </dependency>
     </dependencies>
 
+    <build>
+      <plugins>
+        <!--
+            set up maven assembly plugin to build combined output jar that gets
+            bundled into dist zip from:
+            http://stackoverflow.com/questions/1522778/maven-assembly-plugin-how-to-create-nested-assemblies
+        -->
+        <plugin>
+          <artifactId>maven-assembly-plugin</artifactId>
+          <version>2.4.1</version>
+          <executions>
+            <execution>
+              <id>jar-with-dependencies</id>
+              <phase>package</phase>
+              <goals>
+                <goal>single</goal>
+              </goals>
+              <configuration>
+                <descriptorRefs>
+                  <descriptorRef>jar-with-dependencies</descriptorRef>
+                </descriptorRefs>
+                <archive>
+                  <manifest>
+                    <mainClass>com.clearspring.metriccatcher.Loader</mainClass>
+                  </manifest>
+                </archive>
+              </configuration>
+            </execution>
+            <execution>
+              <id>dist</id>
+              <phase>package</phase>
+              <goals>
+                <goal>single</goal>
+              </goals>
+              <configuration>
+                <descriptors>
+                  <descriptor>src/main/assembly/dist.xml</descriptor>
+                </descriptors>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
+      </plugins>
+    </build>
+
     <scm>
         <connection>scm:git:git@github.com:addthis/MetricCatcher.git</connection>
         <developerConnection>scm:git:git@github.com:addthis/MetricCatcher.git</developerConnection>
