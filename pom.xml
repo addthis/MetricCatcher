@@ -1,133 +1,133 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <parent>
-      <groupId>com.addthis.common.build.maven.pom</groupId>
-      <artifactId>jar-pom</artifactId>
-      <version>3.1.0</version>
-    </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.addthis.common.build.maven.pom</groupId>
+    <artifactId>jar-pom</artifactId>
+    <version>3.1.0</version>
+  </parent>
 
-    <groupId>com.addthis</groupId>
-    <artifactId>metriccatcher</artifactId>
-    <name>metriccatcher</name>
-    <version>0.4.0-SNAPSHOT</version>
-    <description>Receives metrics on UDP, sends them to Ganglia or Graphite</description>
+  <groupId>com.addthis</groupId>
+  <artifactId>metriccatcher</artifactId>
+  <name>metriccatcher</name>
+  <version>0.4.0-SNAPSHOT</version>
+  <description>Receives metrics on UDP, sends them to Ganglia or Graphite</description>
+  <url>https://github.com/addthis/MetricCatcher</url>
+
+  <licenses>
+    <license>
+      <name>Apache 2</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+    </license>
+  </licenses>
+
+  <properties>
+    <slf4j.version>1.6.6</slf4j.version>
+    <metrics.version>2.2.0</metrics.version>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.codehaus.jackson</groupId>
+      <artifactId>jackson-mapper-asl</artifactId>
+      <version>1.8.5</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+      <version>3.0.1</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-codec</groupId>
+      <artifactId>commons-codec</artifactId>
+      <version>1.5</version>
+    </dependency>
+
+    <!-- Coda Hale's Metrics -->
+    <dependency>
+      <groupId>com.yammer.metrics</groupId>
+      <artifactId>metrics-core</artifactId>
+      <version>${metrics.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.yammer.metrics</groupId>
+      <artifactId>metrics-graphite</artifactId>
+      <version>${metrics.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.yammer.metrics</groupId>
+      <artifactId>metrics-ganglia</artifactId>
+      <version>${metrics.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.addthis.metrics</groupId>
+      <artifactId>reporter-config</artifactId>
+      <version>2.2.0</version>
+    </dependency>
+
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.10</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-log4j12</artifactId>
+      <version>${slf4j.version}</version>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <!--
+          set up maven assembly plugin to build combined output jar that gets
+          bundled into dist zip from:
+          http://stackoverflow.com/questions/1522778/maven-assembly-plugin-how-to-create-nested-assemblies
+      -->
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>2.4.1</version>
+        <executions>
+          <execution>
+            <id>jar-with-dependencies</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+            <configuration>
+              <descriptorRefs>
+                <descriptorRef>jar-with-dependencies</descriptorRef>
+              </descriptorRefs>
+              <archive>
+                <manifest>
+                  <mainClass>com.clearspring.metriccatcher.Loader</mainClass>
+                </manifest>
+              </archive>
+            </configuration>
+          </execution>
+          <execution>
+            <id>dist</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+            <configuration>
+              <descriptors>
+                <descriptor>src/main/assembly/dist.xml</descriptor>
+              </descriptors>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+  <scm>
+    <connection>scm:git:git@github.com:addthis/MetricCatcher.git</connection>
+    <developerConnection>scm:git:git@github.com:addthis/MetricCatcher.git</developerConnection>
     <url>https://github.com/addthis/MetricCatcher</url>
-
-    <licenses>
-        <license>
-            <name>Apache 2</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-        </license>
-    </licenses>
-
-    <properties>
-        <slf4j.version>1.6.6</slf4j.version>
-        <metrics.version>2.2.0</metrics.version>
-    </properties>
-
-    <dependencies>
-        <dependency>
-            <groupId>org.codehaus.jackson</groupId>
-            <artifactId>jackson-mapper-asl</artifactId>
-            <version>1.8.5</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-            <version>3.0.1</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-codec</groupId>
-            <artifactId>commons-codec</artifactId>
-            <version>1.5</version>
-        </dependency>
-
-        <!-- Coda Hale's Metrics -->
-        <dependency>
-            <groupId>com.yammer.metrics</groupId>
-            <artifactId>metrics-core</artifactId>
-            <version>${metrics.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.yammer.metrics</groupId>
-            <artifactId>metrics-graphite</artifactId>
-            <version>${metrics.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.yammer.metrics</groupId>
-            <artifactId>metrics-ganglia</artifactId>
-            <version>${metrics.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.addthis.metrics</groupId>
-            <artifactId>reporter-config</artifactId>
-            <version>2.2.0</version>
-        </dependency>
-
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.10</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-            <version>${slf4j.version}</version>
-        </dependency>
-    </dependencies>
-
-    <build>
-      <plugins>
-        <!--
-            set up maven assembly plugin to build combined output jar that gets
-            bundled into dist zip from:
-            http://stackoverflow.com/questions/1522778/maven-assembly-plugin-how-to-create-nested-assemblies
-        -->
-        <plugin>
-          <artifactId>maven-assembly-plugin</artifactId>
-          <version>2.4.1</version>
-          <executions>
-            <execution>
-              <id>jar-with-dependencies</id>
-              <phase>package</phase>
-              <goals>
-                <goal>single</goal>
-              </goals>
-              <configuration>
-                <descriptorRefs>
-                  <descriptorRef>jar-with-dependencies</descriptorRef>
-                </descriptorRefs>
-                <archive>
-                  <manifest>
-                    <mainClass>com.clearspring.metriccatcher.Loader</mainClass>
-                  </manifest>
-                </archive>
-              </configuration>
-            </execution>
-            <execution>
-              <id>dist</id>
-              <phase>package</phase>
-              <goals>
-                <goal>single</goal>
-              </goals>
-              <configuration>
-                <descriptors>
-                  <descriptor>src/main/assembly/dist.xml</descriptor>
-                </descriptors>
-              </configuration>
-            </execution>
-          </executions>
-        </plugin>
-      </plugins>
-    </build>
-
-    <scm>
-        <connection>scm:git:git@github.com:addthis/MetricCatcher.git</connection>
-        <developerConnection>scm:git:git@github.com:addthis/MetricCatcher.git</developerConnection>
-        <url>https://github.com/addthis/MetricCatcher</url>
-        <tag>HEAD</tag>
-    </scm>
+    <tag>HEAD</tag>
+  </scm>
 
 </project>
