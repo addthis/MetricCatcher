@@ -21,7 +21,6 @@
   </licenses>
 
   <properties>
-    <slf4j.version>1.6.6</slf4j.version>
     <metrics.version>2.2.0</metrics.version>
   </properties>
 
@@ -74,7 +73,7 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-log4j12</artifactId>
-      <version>${slf4j.version}</version>
+      <version>${dep.slf4j.version}</version>
     </dependency>
   </dependencies>
 
