@@ -9,7 +9,7 @@
     <groupId>com.addthis</groupId>
     <artifactId>metriccatcher</artifactId>
     <name>metriccatcher</name>
-    <version>0.3.1-SNAPSHOT</version>
+    <version>0.4.0-SNAPSHOT</version>
     <description>Receives metrics on UDP, sends them to Ganglia or Graphite</description>
     <url>https://github.com/addthis/MetricCatcher</url>
 
