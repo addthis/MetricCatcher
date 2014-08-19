@@ -119,10 +119,11 @@ public class MetricCatcher extends Thread {
         // Split the name from the JSON on dots for the metric group/type/name
         MetricName metricName;
         ArrayList<String> parts = new ArrayList<String>(Arrays.asList(jsonMetric.getName().split("\\.")));
-        if (parts.size() >= 3)
+        if (parts.size() >= 3) {
             metricName = new MetricName(parts.remove(0), parts.remove(0), StringUtils.join(parts, "."));
-        else
+        } else {
             metricName = new MetricName(jsonMetric.getName(), "", "");
+        }
 
         Class<?> metricType = jsonMetric.getMetricClass();
         if (metricType == Gauge.class) {
@@ -133,10 +134,11 @@ public class MetricCatcher extends Thread {
             // TODO timeunit
             return Metrics.newMeter(metricName, jsonMetric.getName(), TimeUnit.MINUTES);
         } else if (metricType == Histogram.class) {
-            if (jsonMetric.getType().equals("biased"))
+            if (jsonMetric.getType().equals("biased")) {
                 return Metrics.newHistogram(metricName, true);
-            else
+            } else {
                 return Metrics.newHistogram(metricName, false);
+            }
         } else if (metricType == Timer.class) {
             return Metrics.newTimer(metricName, TimeUnit.MICROSECONDS, TimeUnit.SECONDS);
         }
@@ -169,21 +171,22 @@ public class MetricCatcher extends Thread {
      */
     protected void updateMetric(Metric metric, double value) {
         if (metric instanceof Gauge) {
-                ((GaugeMetricImpl)metric).setValue((long)value);
+                ((GaugeMetricImpl) metric).setValue((long) value);
         } else if (metric instanceof Counter) {
-            if (value > 0)
-                ((Counter)metric).inc((long)value);
-            else if (value < 0)
-                ((Counter)metric).dec((long)value * -1);
-            else
-                ((Counter)metric).clear();
+            if (value > 0) {
+                ((Counter) metric).inc((long) value);
+            } else if (value < 0) {
+                ((Counter) metric).dec((long) value * -1);
+            } else {
+                ((Counter) metric).clear();
+            }
         } else if (metric instanceof Meter) {
-            ((Meter)metric).mark((long)value);
+            ((Meter) metric).mark((long) value);
         } else if (metric instanceof Histogram) {
             // TODO clearing?  How about no, so that we can record 0 values; it'll clear over time...
-            ((Histogram)metric).update((long)value);
+            ((Histogram) metric).update((long) value);
         } else if (metric instanceof Timer) {
-            ((Timer)metric).update((long)value, TimeUnit.MICROSECONDS);
+            ((Timer) metric).update((long) value, TimeUnit.MICROSECONDS);
         } else {
             logger.debug("didn't find a class to map to");
         }

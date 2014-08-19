@@ -48,8 +48,9 @@ public enum MetricType {
     public static MetricType fromName(String name) {
         if (name != null) {
             for (MetricType t : MetricType.values()) {
-                if (t.name.equalsIgnoreCase(name))
+                if (t.name.equalsIgnoreCase(name)) {
                     return t;
+                }
             }
         }
 

@@ -69,7 +69,7 @@ public class Loader {
         try {
             properties.load(new FileReader(propertiesFile));
             for (Object key : properties.keySet()) {  // copy properties into system properties
-                System.setProperty((String) key, (String)properties.get(key));
+                System.setProperty((String) key, (String) properties.get(key));
             }
         } catch (IOException e) {
             logger.error("error reading properties file: " + e);
@@ -116,7 +116,9 @@ public class Loader {
                 graphitePrefix = InetAddress.getLocalHost().getHostName();
             }
             logger.info("Creating Graphite reporter pointed at " + graphiteHost + ":" + graphitePort + " with prefix '" + graphitePrefix + "'");
-            GraphiteReporter graphiteReporter = new GraphiteReporter(graphiteHost, Integer.parseInt(graphitePort), StringUtils.trimToNull(graphitePrefix));
+            GraphiteReporter graphiteReporter = new GraphiteReporter(graphiteHost,
+                                                                     Integer.parseInt(graphitePort),
+                                                                     StringUtils.trimToNull(graphitePrefix));
             graphiteReporter.printVMMetrics = !disableJvmMetrics;
             graphiteReporter.start(reportingInterval, TimeUnit.SECONDS);
             reportingEnabled = true;
@@ -127,8 +129,7 @@ public class Loader {
             logger.info("Trying to load reporterConfig from file: {}", reporterConfigFile);
             try {
                 ReporterConfig.loadFromFileAndValidate(reporterConfigFile).enableAll();
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 logger.error("Failed to load metrics-reporter-config, metric sinks will not be activated", e);
             }
             reportingEnabled = true;
@@ -166,8 +167,9 @@ public class Loader {
         logger.info("shutting down...");
 
         // Pass shutdown to the metricCatcher
-        if (metricCatcher != null)
+        if (metricCatcher != null) {
             metricCatcher.shutdown();
+        }
 
         try {
             // Wait for it shutdown
