@@ -269,6 +269,7 @@ public class MetricCatcherTest {
 
     @Test
     public void testRun_TimerMetric() throws IOException, InterruptedException {
+        // input is in seconds
         double minValue = 0.32097400;
         double maxValue = 11111173;
         String json = "[" +
@@ -289,8 +290,9 @@ public class MetricCatcherTest {
         metricCatcher.shutdown();
 
         double minval = ((Timer) metricCache.get(metricName)).min();
-        assertEquals(minValue, minval, 1);
-        assertEquals(maxValue, ((Timer) metricCache.get(metricName)).max(), 1);
+        // duration scale unit is milliseconds
+        assertEquals(minValue * 1e3, minval, 1);
+        assertEquals(maxValue * 1e3, ((Timer) metricCache.get(metricName)).max(), 1);
     }
 
     @Test

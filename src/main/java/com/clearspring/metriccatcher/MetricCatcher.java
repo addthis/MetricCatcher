@@ -140,7 +140,7 @@ public class MetricCatcher extends Thread {
                 return Metrics.newHistogram(metricName, false);
             }
         } else if (metricType == Timer.class) {
-            return Metrics.newTimer(metricName, TimeUnit.MICROSECONDS, TimeUnit.SECONDS);
+            return Metrics.newTimer(metricName, TimeUnit.MILLISECONDS, TimeUnit.SECONDS);
         }
 
         // Uh-oh
@@ -186,7 +186,8 @@ public class MetricCatcher extends Thread {
             // TODO clearing?  How about no, so that we can record 0 values; it'll clear over time...
             ((Histogram) metric).update((long) value);
         } else if (metric instanceof Timer) {
-            ((Timer) metric).update((long) value, TimeUnit.MICROSECONDS);
+            // Metrics Timer internally stores measurements as nanoseconds
+            ((Timer) metric).update((long) (value * 1e9), TimeUnit.NANOSECONDS);
         } else {
             logger.debug("didn't find a class to map to");
         }
