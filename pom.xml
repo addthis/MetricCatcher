@@ -22,7 +22,7 @@
   <groupId>com.addthis</groupId>
   <artifactId>metriccatcher</artifactId>
   <name>metriccatcher</name>
-  <version>0.4.0</version>
+  <version>0.4.1-SNAPSHOT</version>
   <description>Receives metrics on UDP, sends them to Ganglia or Graphite</description>
   <url>https://github.com/addthis/MetricCatcher</url>
 
@@ -153,7 +153,7 @@
     <connection>scm:git:git@github.com:addthis/MetricCatcher.git</connection>
     <developerConnection>scm:git:git@github.com:addthis/MetricCatcher.git</developerConnection>
     <url>https://github.com/addthis/MetricCatcher</url>
-    <tag>v0.4.0</tag>
+    <tag>HEAD</tag>
   </scm>
 
 </project>
